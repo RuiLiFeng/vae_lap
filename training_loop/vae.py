@@ -67,16 +67,24 @@ def training_loop(config: Config):
         random_interp_img0 = tf.placeholder(tf.float32)
         random_interp_img1 = tf.placeholder(tf.float32)
 
-        fixed_gen_img, random_gen_img,\
-        fixed_gen_interp_img, \
-        random_gen_interp_img = generate_sample(Decoder, fixed_z, random_z, fixed_interp_z0,
-                                                fixed_interp_z1, random_interp_z0, random_interp_z1,
-                                                config.num_midpoints)
-        fixed_recon_img, random_recon_img, \
-        fixed_recon_interp_img, \
-        random_recon_interp_img = reconstruction_sample(Encoder, Decoder, fixed_img, random_img, fixed_interp_img0,
-                                                        fixed_interp_img1, random_interp_img0, random_interp_img1,
-                                                        config.num_midpoints)
+        def eval_step():
+            fixed_gen_img, random_gen_img,\
+            fixed_gen_interp_img, \
+            random_gen_interp_img = generate_sample(Decoder, fixed_z, random_z, fixed_interp_z0,
+                                                    fixed_interp_z1, random_interp_z0, random_interp_z1,
+                                                    config.num_midpoints)
+            fixed_recon_img, random_recon_img, \
+            fixed_recon_interp_img, \
+            random_recon_interp_img = reconstruction_sample(Encoder, Decoder, fixed_img, random_img, fixed_interp_img0,
+                                                            fixed_interp_img1, random_interp_img0, random_interp_img1,
+                                                            config.num_midpoints)
+            return fixed_gen_img, random_gen_img, fixed_gen_interp_img, random_gen_interp_img, \
+                   fixed_recon_img, random_recon_img, fixed_recon_interp_img, random_recon_interp_img
+
+        fixed_gen_img, random_gen_img, \
+        fixed_gen_interp_img, random_gen_interp_img, fixed_recon_img, \
+        random_recon_img, fixed_recon_interp_img,\
+        random_recon_interp_img = concate_PerReplica(strategy.experimental_run_v2(eval_step, ()))
 
         print("Building init module...")
         with tf.init_scope():

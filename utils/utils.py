@@ -302,3 +302,14 @@ def reconstruction_sample(Encoder, Decoder, fixed_img, random_img, fixed_interp_
         random_interp_img = None
 
     return fixed_recon_img, random_recon_img, fixed_interp_img, random_interp_img
+
+
+def concate_PerReplica(x):
+    outs = []
+    for tensor in x:
+        outs.append(tf.concat(tensor, 0))
+    return outs
+
+
+def fixed_sample(z, Decoder):
+    return Decoder(z, True)
