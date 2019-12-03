@@ -307,14 +307,14 @@ def get_fixed_x(sess, dataset, num, batch_size):
     for i in range(num_batch + 1):
         if i < num_batch:
             xs.append(sess.run(tf.concat(
-                dataset.get_next()[0], 0)))
+                dataset.get_next()[0]._values, 0)))
             ys.append(sess.run(tf.concat(
-                dataset.get_next()[1], 0)))
+                dataset.get_next()[1]._values, 0)))
         else:
             xs.append(sess.run(tf.concat(
-                dataset.get_next()[0], 0))[res])
+                dataset.get_next()[0]._values, 0))[res])
             ys.append(sess.run(tf.concat(
-                dataset.get_next()[1], 0))[res])
+                dataset.get_next()[1]._values, 0))[res])
     x = np.concatenate(xs, 0)
     y = np.concatenate(ys, 0)
     return x, y
