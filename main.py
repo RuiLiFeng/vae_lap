@@ -72,7 +72,13 @@ parser.add_argument(
     help='Use LZF compression? (default: %(default)s)')
 parser.add_argument(
     '--model', type=str, default='vae',
-                    help='seed for np')
+    help='seed for np')
+parser.add_argument(
+    '--model_dir_root', type=str, default='/gdata/fengrl/vae',
+    help='seed for np')
+parser.add_argument(
+    '--run_dir', type=str, default='/program/vae_lap',
+    help='seed for np')
 
 
 args = vars(parser.parse_args())
