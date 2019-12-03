@@ -303,16 +303,12 @@ def concate_PerReplica(input_dict):
 def get_fixed_x(sess, dataset, num, batch_size):
     num_batch, res = divmod(num, batch_size)
     xs = []
-    ys = []
     for i in range(num_batch + 1):
         if i < num_batch:
             xs.append(sess.run(tf.concat(
                 dataset.get_next()[0]._values, 0)))
-            ys.append(sess.run(dataset.get_next()[1]._values))
         else:
             xs.append(sess.run(tf.concat(
                 dataset.get_next()[0]._values, 0))[res])
-            ys.append(sess.run(dataset.get_next()[1]._values)[res])
     x = np.concatenate(xs, 0)
-    y = np.concatenate(ys, 0)
-    return x, y
+    return x, None
