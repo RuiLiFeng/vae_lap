@@ -107,15 +107,13 @@ class Config(object):
     Class that manage basic training settings.
     """
     def __init__(self,
-                 task_name='invSSGAN',
-                 model_dir_root='/gdata/fengrl/SSGAN',
-                 data_dir='/gpub/temp/imagenet2012',
-                 run_dir="/ghome/fengrl/ssgan/invSSGAN",
+                 task_name='vae',
+                 model_dir_root='/gdata/fengrl/vae',
+                 run_dir="/program/vae_lap",
                  ):
         self.task_name = task_name
         self.model_dir_root = model_dir_root
         self.model_dir = None
-        self.data_dir = data_dir
         self.run_dir = run_dir
         self.logger = None
 
@@ -185,17 +183,23 @@ def create_image_grid(images, grid_size=None):
     :param grid_size:
     :return:
     """
-    assert images.ndim == 3 or images.ndim == 4
+    assert images.ndim == 3 or images.ndim == 4 or images.ndim == 5
     if images.ndim == 4:
         images = images.transpose([0, 3, 1, 2])
-        if images.shape[0] >= 64:
-            images = images[:64]
+        # if images.shape[0] >= 64:
+        #     images = images[:64]
+    elif images.ndim == 5:
+        images = images.transpose([0, 1, 4, 2, 3])
     else:
         images = images.transpose([2, 0, 1])
     num, img_w, img_h = images.shape[0], images.shape[-1], images.shape[-2]
 
     if grid_size is not None:
         grid_w, grid_h = tuple(grid_size)
+    elif images.ndim == 5:
+        grid_h = images.shape[0]
+        grid_w = images.shape[1]
+        images = np.reshape(images, [-1] + images.shape[2:])
     else:
         grid_w = max(int(np.ceil(np.sqrt(num))), 1)
         grid_h = max((num - 1) // grid_w + 1, 1)
@@ -240,76 +244,77 @@ def interp(x0, x1, num_midpoints):
     return (tf.expand_dims(x0, 1) * lerp) + (tf.expand_dims(x1, 1) * lerp)
 
 
-def interp_sheet(Decoder, num_midpoints, z0, z1):
-    zs = tf.reshape(interp(z0, z1, num_midpoints), [-1, z0.shape[1]])
-    out_ims = Decoder(zs, is_training=True)
-    return out_ims
-
-
-def generate_sample(Decoder, fixed_z, random_z, fixed_interp_z0, fixed_interp_z1, random_interp_z0, random_interp_z1,
-                    num_midpoints):
-    # Generate fixed samples
-    if fixed_z is not None:
-        fixed_img = Decoder(fixed_z, True)
+def interp_sheet(Encoder, Decoder, input_dict, recon=False):
+    if recon:
+        _, _, z0 = Encoder(input_dict['fixed_x0'], True)
+        _, _, z1 = Encoder(input_dict['fixed_x1'], True)
+        zs = tf.reshape(interp(z0, z1, input_dict['num_midpoints']), [-1, z0.shape[1]])
+        out_ims = Decoder(zs, is_training=True, flatten=False)
     else:
-        fixed_img = None
-
-    # Generate random_samples
-    if random_z is not None:
-        random_img = Decoder(random_z, True)
-    else:
-        random_img = None
-
-    # Generate fixed interp
-    if fixed_interp_z0 is not None and fixed_interp_z1 is not None:
-        fixed_interp_img = interp_sheet(Decoder, num_midpoints, fixed_interp_z0, fixed_interp_z1)
-    else:
-        fixed_interp_img = None
-
-    # Generate random interp
-    if random_interp_z0 is not None and random_interp_z1 is not None:
-        random_interp_img = interp_sheet(Decoder, num_midpoints, random_interp_z0, random_interp_z1)
-    else:
-        random_interp_img = None
-
-    return fixed_img, random_img, fixed_interp_img, random_interp_img
+        zs = tf.reshape(interp(input_dict['fixed_z0'], input_dict['fixed_z1'],
+                               input_dict['num_midpoints']), [-1, input_dict['fixed_z0'].shape[1]])
+        out_ims = Decoder(zs, is_training=True, flatten=False)
+    return tf.reshape(out_ims, [input_dict['fixed_x0'].shape[0], input_dict['num_midpoints'] + 2, out_ims.shape[1],
+                                out_ims.shape[2], out_ims.shape[3]])
 
 
-def reconstruction_sample(Encoder, Decoder, fixed_img, random_img, fixed_interp_img0, fixed_interp_img1,
-                          random_interp_img0, random_interp_img1, num_midpoints):
-    if fixed_img is not None:
-        _, _, fixed_z = Encoder(fixed_img, True)
-        fixed_recon_img = Decoder(fixed_z, True)
-    else:
-        fixed_recon_img = None
-
-    if random_img is not None:
-        _, _, random_z = Encoder(random_img, True)
-        random_recon_img = Decoder(random_z, True)
-    else:
-        random_recon_img = None
-
-    if fixed_interp_img0 is not None and fixed_interp_img1 is not None:
-        fixed_interp_img = interp_sheet(Decoder, num_midpoints,
-                                        Encoder(fixed_interp_img0, True), Encoder(fixed_interp_img1, True))
-    else:
-        fixed_interp_img = None
-
-    if random_interp_img0 is not None and random_interp_img1 is not None:
-        random_interp_img = interp_sheet(Decoder, num_midpoints,
-                                         Encoder(random_interp_img0, True), Encoder(random_interp_img1, True))
-    else:
-        random_interp_img = None
-
-    return fixed_recon_img, random_recon_img, fixed_interp_img, random_interp_img
+def sample(Decoder, input_dict):
+    return Decoder(input_dict['fixed_z'], True, False)
 
 
-def concate_PerReplica(x):
-    outs = []
-    for tensor in x:
-        outs.append(tf.concat(tensor, 0))
-    return outs
+def reconstruct(Encoder, Decoder, input_dict):
+    _, _, z = Encoder(input_dict['fixed_x'], True)
+    return Decoder(z, True, False)
 
 
-def fixed_sample(z, Decoder):
-    return Decoder(z, True)
+def generate_sample(Decoder, input_dict):
+    """
+    Generate samples
+    :param Decoder:
+    :param input_dict: fixed_z, fixed_z0, fixed_z1, num_midpoints
+    :return: fixed_gen, fixed_gen_interp
+    """
+    fixed_gen = sample(Decoder, input_dict)
+    fixed_gen_interp = interp_sheet(None, Decoder, input_dict, False)
+    return {'fixed_gen': fixed_gen, 'fixed_gen_interp': fixed_gen_interp}
+
+
+def reconstruction_sample(Encoder, Decoder, input_dict):
+    """
+
+    :param Encoder:
+    :param Decoder:
+    :param input_dict: fixed_x, fixed_x1, fixed_x2, num_midpoints
+    :return: fixed_recon, fixed_recon_interp
+    """
+    fixed_recon = reconstruct(Encoder, Decoder, input_dict)
+    fixed_recon_interp = interp_sheet(Encoder, Decoder, input_dict, True)
+    return {'fixed_rencon': fixed_recon, 'fixed_recon_interp': fixed_recon_interp}
+
+
+def concate_PerReplica(input_dict):
+    out_dict = {}
+    print(input_dict)
+    for key in input_dict:
+        out_dict.update({key: tf.concat(input_dict[key]._values, 0)})
+    return out_dict
+
+
+def get_fixed_x(sess, dataset, num, batch_size):
+    num_batch, res = divmod(num, batch_size)
+    xs = []
+    ys = []
+    for i in range(num_batch + 1):
+        if i < num_batch:
+            xs.append(sess.run(tf.concat(
+                dataset.get_next()[0], 0)))
+            ys.append(sess.run(tf.concat(
+                dataset.get_next()[1], 0)))
+        else:
+            xs.append(sess.run(tf.concat(
+                dataset.get_next()[0], 0))[res])
+            ys.append(sess.run(tf.concat(
+                dataset.get_next()[1], 0))[res])
+    x = np.concatenate(xs, 0)
+    y = np.concatenate(ys, 0)
+    return x, y

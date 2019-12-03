@@ -34,7 +34,7 @@ class Decoder(AbstractArch):
     def apply(self, z, is_training, flatten=True):
         assert len(z.shape) == 2, "z must be 2-D tensor but found %d-D" % (len(z.shape))
         h = tf.tanh(ops.linear(z, self.hidden_num, scope='hidden'))
-        y = tf.nn.sigmoid(ops.linear(h, np.prod(self.img_shape[1:]), scope='y'))
+        y = tf.nn.sigmoid(ops.linear(h, np.prod(self.img_shape), scope='y'))
         if not flatten:
             y = tf.reshape(y, [-1] + self.img_shape)
         return y
@@ -50,7 +50,7 @@ def reparametric(mu, log_sigma, distribution='normal', name=None):
                                            'found %s and %s' % (mu.shape, log_sigma.shape)
     sigma = tf.exp(log_sigma * 0.5)
     if distribution == 'normal':
-        epi = tf.random.normal(mu.shape)
+        epi = tf.random.normal(mu.shape, dtype=mu.dtype)
     else:
         raise ValueError('Not supported distribution type %s !' % distribution)
     if name is not None:

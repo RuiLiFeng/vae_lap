@@ -58,6 +58,7 @@ class ImageDataset(object):
 
     def parse_fn(self, features):
         image = tf.cast(features['image'], tf.float32) / 255.0
+        image = tf.transpose(image, [2, 0, 1])
         return image, features['label']
 
     def load_dataset(self, split):
