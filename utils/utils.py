@@ -184,22 +184,26 @@ def create_image_grid(images, grid_size=None):
     :return:
     """
     assert images.ndim == 3 or images.ndim == 4 or images.ndim == 5
-    if images.ndim == 4:
-        images = images.transpose([0, 3, 1, 2])
-        # if images.shape[0] >= 64:
-        #     images = images[:64]
-    elif images.ndim == 5:
-        images = images.transpose([0, 1, 4, 2, 3])
+    # if images.ndim == 4:
+    #     pass
+    #     # images = images.transpose([0, 3, 1, 2])
+    #     # # if images.shape[0] >= 64:
+    #     # #     images = images[:64]
+    # elif images.ndim == 5:
+    #     images = images.transpose([0, 1, 4, 2, 3])
+    # else:
+    #     images = images.transpose([2, 0, 1])
+    if images.ndim == 5:
+        num, img_w, img_h = images.shape[0] * images.shape[1], images.shape[-1], images.shape[-2]
     else:
-        images = images.transpose([2, 0, 1])
-    num, img_w, img_h = images.shape[0], images.shape[-1], images.shape[-2]
+        num, img_w, img_h = images.shape[0], images.shape[-1], images.shape[-2]
 
     if grid_size is not None:
         grid_w, grid_h = tuple(grid_size)
     elif images.ndim == 5:
         grid_h = images.shape[0]
         grid_w = images.shape[1]
-        images = np.reshape(images, [-1] + images.shape[2:])
+        images = np.reshape(images, (-1,) + images.shape[2:])
     else:
         grid_w = max(int(np.ceil(np.sqrt(num))), 1)
         grid_h = max((num - 1) // grid_w + 1, 1)
@@ -216,7 +220,7 @@ def convert_to_pil_image(image, drange=[0, 1]):
     assert image.ndim == 2 or image.ndim == 3
     if image.ndim == 3:
         if image.shape[0] == 1:
-            image = image[0]  # grayscale CHW => HW
+            image = image[0]  # grayscale CHW => HW'
         else:
             image = image.transpose(1, 2, 0) # CHW -> HWC
 
@@ -241,7 +245,7 @@ def interp(x0, x1, num_midpoints):
     """
     lerp = tf.linspace(0.0, 1.0, num_midpoints + 2)
     lerp = tf.reshape(tf.cast(lerp, x0.dtype), [1, -1, 1])
-    return (tf.expand_dims(x0, 1) * lerp) + (tf.expand_dims(x1, 1) * lerp)
+    return (tf.expand_dims(x0, 1) * (1 - lerp)) + (tf.expand_dims(x1, 1) * lerp)
 
 
 def interp_sheet(Encoder, Decoder, input_dict, recon=False):

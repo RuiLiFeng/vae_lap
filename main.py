@@ -32,16 +32,26 @@ parser.add_argument(
     '--d_hidden_num', type=int, default=300,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
+    '--laplace_lambda', type=float, default=1.0,
+    help='Default overall batchsize (default: %(default)s)')
+parser.add_argument(
+    '--sigma', type=float, default=1,
+    help='Default overall batchsize (default: %(default)s)')
+parser.add_argument(
+    '--smooth_sigma', type=float, default=2.5,
+    help='Default overall batchsize (default: %(default)s)')
+
+parser.add_argument(
     '--lr', type=float, default=0.0001,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
     '--decay_step', type=int, default=3000,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
-    '--decay_coef', type=int, default=0.5,
+    '--decay_coef', type=float, default=0.5,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
-    '--beta2', type=int, default=0.999,
+    '--beta2', type=float, default=0.999,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
     '--example_nums', type=int, default=32,
@@ -59,6 +69,9 @@ parser.add_argument(
     '--restore_d_dir', type=str, default='/ghome/fengrl/disc_ckpt/disc-0',
     help='seed for np')
 parser.add_argument(
+    '--restore_s_dir', type=str, default='/gdata/fengrl/ckpt/valina_vae/celeb_a/en.ckpt-104000',
+    help='seed for np')
+parser.add_argument(
     '--total_step', type=int, default=250000,
     help='seed for np')
 parser.add_argument(
@@ -68,7 +81,7 @@ parser.add_argument(
     '--save_per_steps', type=int, default=2000,
     help='seed for np')
 parser.add_argument(
-    '--print_loss_per_steps', type=int, default=2000,
+    '--print_loss_per_steps', type=int, default=100,
     help='Use LZF compression? (default: %(default)s)')
 parser.add_argument(
     '--model', type=str, default='vae',

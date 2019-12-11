@@ -9,4 +9,3 @@ def training_loop(config:Config):
     opts = {'dataset': config.dataset, "datashap": wvae.datashapes[config.dataset]}
     Encoder = wvae.Encoder(opts)
     Decoder = wvae.Decoder(opts)
-    
