@@ -22,8 +22,6 @@ def training_loop(config: Config):
     global_step = tf.get_variable(name='global_step', initializer=tf.constant(0), trainable=False,
                                   aggregation=tf.VariableAggregation.ONLY_FIRST_REPLICA)
     print("Constructing networks...")
-    if config.laplace_lambda != 0:
-        Smoother = vae.Encoder(config.dim_z, exceptions=['opt'], name='VAE_En')
 
     Encoder = vae.Encoder(config.dim_z, exceptions=['opt'], name='Encoder')
     Decoder = vae.Decoder(dset.image_shape, exceptions=['opt'], name='Decoder')
@@ -35,29 +33,17 @@ def training_loop(config: Config):
     def train_step(image):
         mu_z, log_sigma_z, z = Encoder(image, is_training=True)
         x = Decoder(z, is_training=True)
-        with tf.variable_scope('kl_divergence'):
-            kl_divergence = - tf.reduce_mean(tf.reduce_sum(
-                0.5 * (1 + log_sigma_z - mu_z ** 2 - tf.exp(log_sigma_z)), 1))
         with tf.variable_scope('reconstruction_loss'):
             recon_loss = config.sigma ** 2 * tf.reduce_mean(tf.reduce_sum(
                 tf.square(image - x), [1, 2, 3]))
-        if config.laplace_lambda != 0:
-            _, _, y = Smoother(image, True)
-            with tf.variable_scope('smooth_loss'):
-                s_w = smoother_weight(y, 'heat', sigma=config.smooth_sigma)
-                smooth_loss = batch_laplacian(s_w, z) * config.laplace_lambda
-        else:
-            smooth_loss = 0.0
-        loss = kl_divergence + recon_loss + smooth_loss
+        loss = recon_loss
         add_global = global_step.assign_add(1)
         update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
         with tf.control_dependencies([add_global] + update_ops):
             opt = solver.minimize(loss, var_list=Encoder.trainable_variables + Decoder.trainable_variables)
             with tf.control_dependencies([opt]):
-                return tf.identity(loss), tf.identity(recon_loss), \
-                       tf.identity(kl_divergence), tf.identity(smooth_loss)
-
-    loss, r_loss, kl_loss, s_loss = train_step(dataset.get_next()[0])
+                return tf.identity(loss)
+    loss = train_step(dataset.get_next()[0])
     print("Building eval module...")
 
     fixed_z = tf.constant(np.random.normal(size=[config.example_nums, config.dim_z]), dtype=tf.float32)
@@ -90,15 +76,10 @@ def training_loop(config: Config):
         init = [tf.global_variables_initializer(), dataset.initializer, eval_dataset.initializer]
         saver_e = tf.train.Saver(Encoder.restore_variables)
         saver_d = tf.train.Saver(Decoder.restore_variables)
-        if config.laplace_lambda != 0:
-            saver_s = tf.train.Saver(Smoother.restore_variables)
 
     print('Starting training...')
     with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
         sess.run(init)
-        if config.laplace_lambda != 0:
-            print('Restore smoother...')
-            saver_s.restore(sess, config.restore_s_dir)
         if config.resume:
             print("Restore vae...")
             saver_e.restore(sess, config.restore_e_dir)
@@ -112,13 +93,13 @@ def training_loop(config: Config):
         print("Completing all work, iteration now start, consuming %s " % timer.runing_time_format)
         print("Start iterations...")
         for iteration in range(config.total_step):
-            loss_, r_loss_, kl_loss_, s_loss_, lr_ = sess.run([loss, r_loss, kl_loss, s_loss, learning_rate])
+            loss_, lr_ = sess.run([loss, learning_rate])
             if iteration % config.print_loss_per_steps == 0:
                 mse_ = sess.run(mse)
                 timer.update()
-                print("step %d, loss %f, r_loss_ %f, kl_loss_ %f, s_loss %f, mse %f, "
+                print("step %d, loss %f, mse %f, "
                       "learning_rate % f, consuming time %s" %
-                      (iteration, loss_, r_loss_, kl_loss_, s_loss_, mse_,
+                      (iteration, loss_, mse_,
                        lr_, timer.runing_time_format))
             if iteration % config.eval_per_steps == 0:
                 o_dict_ = sess.run(o_dict, {fixed_x: fixed_x_, fixed_x0: fixed_x0_, fixed_x1: fixed_x1_})

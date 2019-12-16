@@ -35,10 +35,16 @@ parser.add_argument(
     '--laplace_lambda', type=float, default=1.0,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
+    '--laplace_lambda_x', type=float, default=1.0,
+    help='Default overall batchsize (default: %(default)s)')
+parser.add_argument(
     '--sigma', type=float, default=1,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
     '--smooth_sigma', type=float, default=2.5,
+    help='Default overall batchsize (default: %(default)s)')
+parser.add_argument(
+    '--smooth_sigma_x', type=float, default=2.5,
     help='Default overall batchsize (default: %(default)s)')
 
 parser.add_argument(

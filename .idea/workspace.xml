@@ -2,25 +2,107 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="80e2cdbd-6f7f-49eb-815e-0e4606990859" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/network/vae_celeba.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/training_loop/vae_celeba.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/training_loop/vae_local.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/vae_turiol.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/training_loop/vae_celeba_cir_s.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_00.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/results/PRR_epoch_00.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_01.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/results/PRR_epoch_01.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_02.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/results/PRR_epoch_02.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_03.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/results/PRR_epoch_03.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_04.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_07.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_11.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_12.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_15.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_25.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_59.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/training_loop/wvae.py" beforeDir="false" afterPath="$PROJECT_DIR$/training_loop/wvae.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/000.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/001.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/002.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/003.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/004.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/005.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/006.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/007.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/008.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/009.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/010.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/011.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/012.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/013.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/014.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/015.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/016.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/017.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/018.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/019.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/020.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/021.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/022.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/023.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/024.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/025.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/026.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/027.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/028.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/029.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/030.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/031.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/032.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/033.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/034.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/035.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/036.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/037.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/038.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/039.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/040.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/041.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/042.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/043.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/044.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/045.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/046.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/047.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/048.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/049.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/050.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/051.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/052.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/053.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/054.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/055.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/056.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/057.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/058.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/059.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/060.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/061.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/062.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/063.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/064.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/065.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/066.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/067.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/068.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/069.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/070.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/071.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/072.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/073.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/074.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/075.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/076.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/077.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/078.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/079.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/080.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/081.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/082.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/083.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/084.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/085.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/086.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_00.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_01.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_02.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_03.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_05.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_08.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_14.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_17.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/PRR_epoch_19.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/results/input.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/training_loop/vae_celeba.py" beforeDir="false" afterPath="$PROJECT_DIR$/training_loop/vae_celeba.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,35 +110,13 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DockManager">
-    <window id="1">
-      <content type="file-editors">
-        <state>
-          <leaf>
-            <file pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/network/wvae.py">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="3960">
-                    <caret line="134" column="39" selection-start-line="134" selection-start-column="39" selection-end-line="134" selection-end-column="39" />
-                    <folding>
-                      <element signature="e#0#23#0" expanded="true" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="67" column="58" selection-start-line="67" selection-start-column="58" selection-end-line="67" selection-end-column="58" />
+            <state relative-caret-position="-53">
+              <caret line="46" column="48" lean-forward="true" selection-start-line="46" selection-start-column="48" selection-end-line="46" selection-end-column="48" />
               <folding>
                 <element signature="e#0#25#0" expanded="true" />
               </folding>
@@ -67,8 +127,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/utils/utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1495">
-              <caret line="232" column="4" selection-start-line="232" selection-start-column="4" selection-end-line="232" selection-end-column="4" />
+            <state relative-caret-position="4140">
+              <caret line="123" column="17" selection-start-line="123" selection-start-column="17" selection-end-line="123" selection-end-column="17" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -76,13 +136,34 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_loop/vae_celeba.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="164" column="65" lean-forward="true" selection-start-line="164" selection-start-column="65" selection-end-line="164" selection-end-column="65" />
+            <state relative-caret-position="216">
+              <caret line="15" column="63" selection-start-line="15" selection-start-column="63" selection-end-line="15" selection-end-column="63" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/training_loop/vae_celeba_cir_s.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3384">
+              <caret line="132" column="82" lean-forward="true" selection-start-line="132" selection-start-column="82" selection-end-line="132" selection-end-column="82" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/network/abstract_arch.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="468">
+              <caret line="13" column="13" lean-forward="true" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+              <folding>
+                <element signature="e#0#38#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -127,8 +208,10 @@
         <option value="$PROJECT_DIR$/training_loop/wvae.py" />
         <option value="$PROJECT_DIR$/utils/utils.py" />
         <option value="$PROJECT_DIR$/network/vae_celeba.py" />
-        <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/training_loop/vae_celeba.py" />
+        <option value="$PROJECT_DIR$/training_loop/vae_celeba_cir_lap.py" />
+        <option value="$PROJECT_DIR$/training_loop/vae_celeba_cir_s.py" />
+        <option value="$PROJECT_DIR$/main.py" />
       </list>
     </option>
   </component>
@@ -150,11 +233,6 @@
             <path>
               <item name="vae_lap" type="b2602c69:ProjectViewProjectNode" />
               <item name="vae_lap" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="vae_lap" type="b2602c69:ProjectViewProjectNode" />
-              <item name="vae_lap" type="462c0819:PsiDirectoryNode" />
-              <item name="data" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="vae_lap" type="b2602c69:ProjectViewProjectNode" />
@@ -197,13 +275,13 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\program\vae_lap" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\program\vae_lap\training_loop" />
       <recent name="E:\program\vae_lap\utils" />
       <recent name="E:\program\vae_lap\network" />
-    </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\program\vae_lap" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -231,18 +309,19 @@
       <workItem from="1575024645952" duration="29454000" />
       <workItem from="1575284662031" duration="20932000" />
       <workItem from="1575395478066" duration="16166000" />
-      <workItem from="1575518046511" duration="24044000" />
+      <workItem from="1575518046511" duration="25730000" />
+      <workItem from="1576053430927" duration="8163000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="90596000" />
+    <option name="totallyTimeSpent" value="100445000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.122068234" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.10181237" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -256,8 +335,8 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" weight="0.21691974" />
-      <window_info active="true" anchor="bottom" id="Python Console" order="12" visible="true" weight="0.159436" />
+      <window_info anchor="bottom" id="Terminal" order="11" visible="true" weight="0.14425163" />
+      <window_info anchor="bottom" id="Python Console" order="12" weight="0.27440348" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -275,16 +354,6 @@
     <entry file="file://$PROJECT_DIR$/network/abstruct_network.py" />
     <entry file="file://$PROJECT_DIR$/train.py">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/network/abstract_arch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="4" column="23" lean-forward="true" selection-start-line="4" selection-start-column="23" selection-end-line="4" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/network/wvae_ops.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -374,16 +443,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/network/wvae.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3960">
-          <caret line="134" column="39" selection-start-line="134" selection-start-column="39" selection-end-line="134" selection-end-column="39" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/training_loop/wvae.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="396">
@@ -464,16 +523,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1495">
-          <caret line="232" column="4" selection-start-line="232" selection-start-column="4" selection-end-line="232" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/training_loop/vae_local.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2573">
@@ -484,22 +533,69 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$PROJECT_DIR$/utils/utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="67" column="58" selection-start-line="67" selection-start-column="58" selection-end-line="67" selection-end-column="58" />
+        <state relative-caret-position="4140">
+          <caret line="123" column="17" selection-start-line="123" selection-start-column="17" selection-end-line="123" selection-end-column="17" />
           <folding>
-            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network/wvae.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="801">
+          <caret line="134" column="39" selection-start-line="134" selection-start-column="39" selection-end-line="134" selection-end-column="39" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network/abstract_arch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="468">
+          <caret line="13" column="13" lean-forward="true" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#38#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training_loop/vae_celeba_cir_lap.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="343">
+          <caret line="92" column="32" lean-forward="true" selection-start-line="92" selection-start-column="32" selection-end-line="92" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/training_loop/vae_celeba.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="164" column="65" lean-forward="true" selection-start-line="164" selection-start-column="65" selection-end-line="164" selection-end-column="65" />
+        <state relative-caret-position="216">
+          <caret line="15" column="63" selection-start-line="15" selection-start-column="63" selection-end-line="15" selection-end-column="63" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training_loop/vae_celeba_cir_s.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3384">
+          <caret line="132" column="82" lean-forward="true" selection-start-line="132" selection-start-column="82" selection-end-line="132" selection-end-column="82" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-53">
+          <caret line="46" column="48" lean-forward="true" selection-start-line="46" selection-start-column="48" selection-end-line="46" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
           </folding>
         </state>
       </provider>

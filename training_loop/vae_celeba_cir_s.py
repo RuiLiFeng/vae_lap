@@ -48,16 +48,22 @@ def training_loop(config: Config):
                 smooth_loss = batch_laplacian(s_w, z) * config.laplace_lambda
         else:
             smooth_loss = 0.0
-        loss = kl_divergence + recon_loss + smooth_loss
+        if config.laplace_lambda_x != 0:
+            with tf.variable_scope('smooth_loss_x'):
+                sx_w = smoother_weight(z, 'heat', sigma=config.smooth_sigma_x)
+                smooth_loss_x = batch_laplacian(sx_w, tf.reshape(x, [x.shape[0], -1])) * config.laplace_lambda_x
+        else:
+            smooth_loss_x = 0.0
+        loss = kl_divergence + recon_loss + smooth_loss + smooth_loss_x
         add_global = global_step.assign_add(1)
         update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
         with tf.control_dependencies([add_global] + update_ops):
             opt = solver.minimize(loss, var_list=Encoder.trainable_variables + Decoder.trainable_variables)
             with tf.control_dependencies([opt]):
                 return tf.identity(loss), tf.identity(recon_loss), \
-                       tf.identity(kl_divergence), tf.identity(smooth_loss)
+                       tf.identity(kl_divergence), tf.identity(smooth_loss), tf.identity(smooth_loss_x)
 
-    loss, r_loss, kl_loss, s_loss = train_step(dataset.get_next()[0])
+    loss, r_loss, kl_loss, s_loss, sx_loss = train_step(dataset.get_next()[0])
     print("Building eval module...")
 
     fixed_z = tf.constant(np.random.normal(size=[config.example_nums, config.dim_z]), dtype=tf.float32)
@@ -112,13 +118,14 @@ def training_loop(config: Config):
         print("Completing all work, iteration now start, consuming %s " % timer.runing_time_format)
         print("Start iterations...")
         for iteration in range(config.total_step):
-            loss_, r_loss_, kl_loss_, s_loss_, lr_ = sess.run([loss, r_loss, kl_loss, s_loss, learning_rate])
+            loss_, r_loss_, kl_loss_, s_loss_, sx_loss_, lr_ = \
+                sess.run([loss, r_loss, kl_loss, s_loss, sx_loss, learning_rate])
             if iteration % config.print_loss_per_steps == 0:
                 mse_ = sess.run(mse)
                 timer.update()
-                print("step %d, loss %f, r_loss_ %f, kl_loss_ %f, s_loss %f, mse %f, "
+                print("step %d, loss %f, r_loss_ %f, kl_loss_ %f, s_loss %f, sx_loss %f, mse %f, "
                       "learning_rate % f, consuming time %s" %
-                      (iteration, loss_, r_loss_, kl_loss_, s_loss_, mse_,
+                      (iteration, loss_, r_loss_, kl_loss_, s_loss_, sx_loss_, mse_,
                        lr_, timer.runing_time_format))
             if iteration % config.eval_per_steps == 0:
                 o_dict_ = sess.run(o_dict, {fixed_x: fixed_x_, fixed_x0: fixed_x0_, fixed_x1: fixed_x1_})
