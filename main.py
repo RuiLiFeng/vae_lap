@@ -14,6 +14,9 @@ parser.add_argument(
     '--tfds_dir', type=str, default='/gdata/tfds',
     help='Default location where data is stored (default: %(default)s)')
 parser.add_argument(
+    '--record_dir', type=str, default='/gdata/tfds',
+    help='Default location where data is stored (default: %(default)s)')
+parser.add_argument(
     '--batch_size', type=int, default=256,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
@@ -23,19 +26,22 @@ parser.add_argument(
     '--img_shape', type=list, default=[1, 28, 28],
     help='Number of dataloader workers (default: %(default)s)')
 parser.add_argument(
-    '--dim_z', type=int, default=10,
+    '--dim_z', type=int, default=20,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
-    '--e_hidden_num', type=int, default=10,
+    '--e_hidden_num', type=int, default=100,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
-    '--d_hidden_num', type=int, default=300,
+    '--d_hidden_num', type=int, default=200,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
     '--laplace_lambda', type=float, default=1.0,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
     '--laplace_lambda_x', type=float, default=1.0,
+    help='Default overall batchsize (default: %(default)s)')
+parser.add_argument(
+    '--laplace_a', type=float, default=0.8,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
     '--sigma', type=float, default=1,

@@ -217,7 +217,8 @@ class CelebaDataset(ImageDataset):
         image = tf.image.resize_images(image, [64, 64])
         image.set_shape(self.image_shape)
         image = tf.cast(image, tf.float32) / 255.0
-        label = tf.constant(0, dtype=tf.int32)
+        # label = tf.constant(0, dtype=tf.int32)
+        label = tf.cast(features["attributes"]["Male"], dtype=tf.int32)
         return image, label
 
 
@@ -268,3 +269,41 @@ def get_dataset(name, tfds_dir, cpu_nums, shuffle_buffer_size=10000, seed=547):
     if name not in DATASETS:
         raise ValueError("Dataset %s is not available." % name)
     return DATASETS[name](tfds_dir, shuffle_buffer_size, cpu_nums, seed=seed)
+
+
+def ReadRecord(dataset_dir, img_shape):
+    raw_dset = tf.data.TFRecordDataset(dataset_dir)
+    feature_description = {
+        'image': tf.io.FixedLenFeature([], tf.string),
+        'label': tf.io.FixedLenFeature([], tf.int64),
+        'representation': tf.io.FixedLenFeature([], tf.string)
+    }
+
+    def _parser(proto):
+        return tf.io.parse_single_example(proto, feature_description)
+
+    dset = raw_dset.map(_parser, 2)
+
+    def _parser_img(features):
+        image = tf.reshape(tf.decode_raw(features['image'], tf.float32), img_shape)
+        rep = tf.decode_raw(features['representation'], tf.float32)
+        label = tf.cast(features['label'], tf.int32)
+        return image, rep, label
+
+    return dset.map(_parser_img, 2)
+
+
+def load_celeba_from_record(record_dir, batch_size):
+    ds = ReadRecord(record_dir, [64, 64, 3])
+    ds = ds.repeat()
+    ds = ds.shuffle(10000, seed=547)
+    ds = ds.batch(batch_size, drop_remainder=True)
+    return ds.prefetch(tf.contrib.data.AUTOTUNE)
+
+
+def load_mnist_from_record(record_dir, batch_size):
+    ds = ReadRecord(record_dir, [1, 28, 28])
+    ds = ds.repeat()
+    ds = ds.shuffle(10000, seed=547)
+    ds = ds.batch(batch_size, drop_remainder=True)
+    return ds.prefetch(tf.contrib.data.AUTOTUNE)

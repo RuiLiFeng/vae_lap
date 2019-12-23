@@ -21,32 +21,29 @@ def training_loop(config: Config):
     eval_dataset = eval_dataset.make_initializable_iterator()
     global_step = tf.get_variable(name='global_step', initializer=tf.constant(0), trainable=False)
     print("Constructing networks...")
-    Encoder = vae.Encoder(config.dim_z, config.e_hidden_num, exceptions=['opt'], name='Encoder')
-    Decoder = vae.Decoder(config.img_shape, config.d_hidden_num, exceptions=['opt'], name='Decoder')
+    Encoder = vae.Encoder(config.dim_z, config.e_hidden_num, exceptions=['opt'], name='VAE_En')
+    Decoder = vae.Decoder(config.img_shape, config.d_hidden_num, exceptions=['opt'], name='VAE_De')
     learning_rate = tf.train.exponential_decay(config.lr, global_step, config.decay_step,
                                                config.decay_coef, staircase=False)
     solver = tf.train.AdamOptimizer(learning_rate=learning_rate, name='opt', beta2=config.beta2)
     print("Building tensorflow graph...")
 
-    def train_step(image):
+    def train_step(data):
+        image, _ = data
         mu_z, log_sigma_z, z = Encoder(image, is_training=True)
         x = Decoder(z, is_training=True, flatten=False)
-        with tf.variable_scope('kl_divergence'):
-            kl_divergence = - tf.reduce_mean(tf.reduce_sum(
-                0.5 * (1 + log_sigma_z - mu_z ** 2 - tf.exp(log_sigma_z)), 1))
         with tf.variable_scope('reconstruction_loss'):
             recon_loss = - tf.reduce_mean(tf.reduce_sum(
                 image * tf.log(x + EPS) + (1 - image) * tf.log(1 - x + EPS), [1, 2, 3]))
-        loss = kl_divergence + recon_loss
+        loss = recon_loss
         add_global = global_step.assign_add(1)
         update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
         with tf.control_dependencies([add_global] + update_ops):
             opt = solver.minimize(loss, var_list=Encoder.trainable_variables + Decoder.trainable_variables)
             with tf.control_dependencies([opt]):
-                return tf.identity(loss), tf.identity(recon_loss), \
-                       tf.identity(kl_divergence)
+                return tf.identity(loss)
 
-    loss, r_loss, kl_loss = train_step(dataset.get_next()[0])
+    loss = train_step(dataset.get_next())
     print("Building eval module...")
 
     fixed_z = tf.constant(np.random.normal(size=[config.example_nums, config.dim_z]), dtype=tf.float32)
@@ -88,11 +85,11 @@ def training_loop(config: Config):
         print("Completing all work, iteration now start, consuming %s " % timer.runing_time_format)
         print("Start iterations...")
         for iteration in range(config.total_step):
-            loss_, r_loss_, kl_loss_, lr_ = sess.run([loss, r_loss, kl_loss, learning_rate])
+            loss_, lr_ = sess.run([loss, learning_rate])
             if iteration % config.print_loss_per_steps == 0:
                 timer.update()
-                print("step %d, loss %f, r_loss_ %f, kl_loss_ %f, learning_rate % f, consuming time %s" %
-                      (iteration, loss_, r_loss_, kl_loss_, lr_, timer.runing_time_format))
+                print("step %d, loss %f, learning_rate % f, consuming time %s" %
+                      (iteration, loss_, lr_, timer.runing_time_format))
             if iteration % config.eval_per_steps == 0:
                 o_dict_ = sess.run(o_dict, {fixed_x: fixed_x_, fixed_x0: fixed_x0_, fixed_x1: fixed_x1_})
                 for key in o_dict:
@@ -116,6 +113,4 @@ def get_fixed_x(sess, dataset, num, batch_size):
             xs.append(sess.run(dataset.get_next()[0])[:res])
     x = np.concatenate(xs, 0)
     return x, None
-
-
 
