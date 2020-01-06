@@ -14,7 +14,7 @@ parser.add_argument(
     '--tfds_dir', type=str, default='/gdata/tfds',
     help='Default location where data is stored (default: %(default)s)')
 parser.add_argument(
-    '--record_dir', type=str, default='/gdata/tfds',
+    '--record_dir', type=str, default='/gdata/fengrl/records/mnist',
     help='Default location where data is stored (default: %(default)s)')
 parser.add_argument(
     '--batch_size', type=int, default=256,

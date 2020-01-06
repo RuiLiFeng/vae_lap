@@ -307,3 +307,37 @@ def load_mnist_from_record(record_dir, batch_size):
     ds = ds.shuffle(10000, seed=547)
     ds = ds.batch(batch_size, drop_remainder=True)
     return ds.prefetch(tf.contrib.data.AUTOTUNE)
+
+
+def Read_KNN_Record(dataset_dir, img_shape):
+    raw_dset = tf.data.TFRecordDataset(dataset_dir)
+    feature_description = {
+        'image': tf.io.FixedLenFeature([], tf.string),
+        'label': tf.io.FixedLenFeature([], tf.int64),
+        'representation': tf.io.FixedLenFeature([], tf.string),
+        'neighbour': tf.io.FixedLenFeature([], tf.string),
+        'index': tf.io.FixedLenFeature([], tf.int64)
+    }
+
+    def _parser(proto):
+        return tf.io.parse_single_example(proto, feature_description)
+
+    dset = raw_dset.map(_parser, 2)
+
+    def _parser_img(features):
+        image = tf.reshape(tf.decode_raw(features['image'], tf.float32), img_shape)
+        rep = tf.decode_raw(features['representation'], tf.float32)
+        neighbour = tf.cast(tf.decode_raw(features['neighbour'], tf.int64), tf.int32)
+        label = tf.cast(features['label'], tf.int32)
+        index = tf.cast(features['index'], tf.int32)
+        return image, rep, label, neighbour, index
+
+    return dset.map(_parser_img, 2)
+
+
+def load_mnist_KNN_from_record(record_dir, batch_size):
+    ds = Read_KNN_Record(record_dir, [1, 28, 28])
+    ds = ds.repeat()
+    ds = ds.shuffle(10000, seed=547)
+    ds = ds.batch(batch_size, drop_remainder=True)
+    return ds.prefetch(tf.contrib.data.AUTOTUNE)

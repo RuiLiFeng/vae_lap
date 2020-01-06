@@ -34,14 +34,14 @@ def main(config):
     dset = get_dataset(config['dataset_name'], '/gdata/tfds', 2)
     dataset = dset.input_fn(config['batch_size'], mode='train')
     dataset = dataset.make_initializable_iterator()
-    Encoder = nn.Encoder(config['dim_z'], config['e_hidden_num'], exceptions=['opt'], name='VAE_En')
+    Encoder = nn.Encoder(config['dim_z'], config['e_hidden_num'], exceptions=['opt'], name='Encoder')
     image, label = dataset.get_next()
     _, _, z = Encoder(image, is_training=True)
     saver = tf.train.Saver(Encoder.restore_variables)
     with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
         sess.run([tf.global_variables_initializer(), dataset.initializer])
         print("Restore Encoder...")
-        saver.restore(sess, config['model_dir'] + '/en.ckpt-62000')
+        saver.restore(sess, config['model_dir'] + '/en.ckpt-40000')
         print('Generate embeddings...')
 
         f = open(config['model_dir'] + '/embeddings.tsv', 'wt')
