@@ -2,8 +2,9 @@ import tensorflow as tf
 import numpy as np
 from utils.utils import *
 from datasets.datasets import get_dataset, load_mnist_KNN_from_record
-import network.vae as vae
+import network.wvae as vae
 import network.arch_ops as ops
+import utils.wae_config as w_config
 from argparse import ArgumentParser
 
 
@@ -12,6 +13,7 @@ EPS = 1e-10
 
 def training_loop(config: Config):
     timer = Timer()
+    opts = w_config.config_mnist
     print('Task name %s' % config.task_name)
     print('Loading %s dataset...' % config.dataset_name)
     dataset = load_mnist_KNN_from_record(config.record_dir + '/Mnist20knn5_rep.tfrecords', config.batch_size)
@@ -20,37 +22,83 @@ def training_loop(config: Config):
 
     global_step = tf.get_variable(name='global_step', initializer=tf.constant(0), trainable=False)
     print("Constructing networks...")
-    Encoder = vae.Encoder(config.dim_z, config.e_hidden_num, exceptions=['opt'], name='Encoder')
-    Decoder = vae.Decoder(config.img_shape, config.d_hidden_num, exceptions=['opt'], name='Decoder')
-    learning_rate = tf.train.exponential_decay(config.lr, global_step, config.decay_step,
+    Encoder = vae.Encoder(opts, exceptions=['opt'], name='Encoder')
+    Decoder = vae.Decoder(opts, exceptions=['opt'], name='Decoder')
+    Discriminator = vae.Discriminator(opts, exceptions=['opt'])
+    learning_rate = tf.train.exponential_decay(0.1 * opts['lr'], global_step, config.decay_step,
                                                config.decay_coef, staircase=False)
-    solver = tf.train.AdamOptimizer(learning_rate=learning_rate, name='opt', beta2=config.beta2)
+    solver = tf.train.AdamOptimizer(learning_rate=learning_rate, name='opt', beta1=opts['adam_beta1'])
+    adv_solver = tf.train.AdamOptimizer(learning_rate=learning_rate, name='opt', beta1=opts['adam_beta1'])
     print("Building tensorflow graph...")
 
     def train_step(data):
         image, rep, label, neighbour, index = data
         mu_z, log_sigma_z, z = Encoder(image, is_training=True)
         x = Decoder(z, is_training=True, flatten=False)
-        with tf.variable_scope('kl_divergence'):
-            kl_divergence = - tf.reduce_mean(tf.reduce_sum(
-                0.5 * (1 + log_sigma_z - mu_z ** 2 - tf.exp(log_sigma_z)), 1))
+        # with tf.variable_scope('kl_divergence'):
+        #     kl_divergence = - tf.reduce_mean(tf.reduce_sum(
+        #         0.5 * (1 + log_sigma_z - mu_z ** 2 - tf.exp(log_sigma_z)), 1))
         with tf.variable_scope('reconstruction_loss'):
-            recon_loss = - tf.reduce_mean(tf.reduce_sum(
-                image * tf.log(x + EPS) + (1 - image) * tf.log(1 - x + EPS), [1, 2, 3]))
+            # recon_loss = - tf.reduce_mean(tf.reduce_sum(
+            #     image * tf.log(x + EPS) + (1 - image) * tf.log(1 - x + EPS), [1, 2, 3]))
+            recon_loss = 0.05 * tf.reduce_mean(tf.reduce_sum(tf.square(image - x), [1, 2, 3]))
         with tf.variable_scope('smooth_loss'):
             mask = make_mask(neighbour, index)
             s_w = mask * smoother_weight(rep, 'heat', sigma2=laplace_sigma2)
             smooth_loss = batch_laplacian(s_w, z) * config.laplace_lambda
-        loss = kl_divergence + recon_loss + smooth_loss
+        with tf.variable_scope('wae_penalty'):
+            Pz = tf.random.normal(shape=[config.batch_size, config.dim_z], mean=0.0, stddev=1.0)
+            logits_Pz = Discriminator(Pz, True)
+            logits_Qz = Discriminator(z, True)
+            loss_Pz = tf.reduce_mean(
+                tf.nn.sigmoid_cross_entropy_with_logits(
+                    logits=logits_Pz, labels=tf.ones_like(logits_Pz)))
+            loss_Qz = tf.reduce_mean(
+                tf.nn.sigmoid_cross_entropy_with_logits(
+                    logits=logits_Qz, labels=tf.zeros_like(logits_Qz)))
+            loss_Qz_trick = tf.reduce_mean(
+                tf.nn.sigmoid_cross_entropy_with_logits(
+                    logits=logits_Qz, labels=tf.ones_like(logits_Qz)))
+            loss_adv = config.wae_lambda * (loss_Pz + loss_Qz)
+            loss_match = config.wae_lambda * loss_Qz_trick
+        # loss = kl_divergence + recon_loss + smooth_loss
+        loss = loss_match + recon_loss + smooth_loss
         add_global = global_step.assign_add(1)
         update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
         with tf.control_dependencies([add_global] + update_ops):
             opt = solver.minimize(loss, var_list=Encoder.trainable_variables + Decoder.trainable_variables)
             with tf.control_dependencies([opt]):
-                return tf.identity(loss), tf.identity(recon_loss), \
-                       tf.identity(kl_divergence), tf.identity(smooth_loss), tf.identity(s_w)
+                l1, l2, l3, l4, l5 = tf.identity(loss), tf.identity(recon_loss), \
+                       tf.identity(loss_match), tf.identity(smooth_loss), tf.identity(s_w)
+        with tf.control_dependencies([add_global] + update_ops):
+            d_opt = adv_solver.minimize(loss_adv, var_list=Discriminator.trainable_variables)
+            with tf.control_dependencies([d_opt]):
+                l6 = tf.identity(loss_adv)
+        return l1, l2, l3, l4, l5, l6
 
-    loss, r_loss, kl_loss, s_loss, s_w = train_step(dataset.get_next())
+    loss, r_loss, m_loss, s_loss, s_w, a_loss = train_step(dataset.get_next())
+
+    def pretrain(data):
+        image, rep, label, neighbour, index = data
+        mu_z, log_sigma_z, z = Encoder(image, is_training=True)
+        Pz = tf.random.normal(shape=[config.batch_size, config.dim_z], mean=0.0, stddev=1.0)
+        mean_pz = tf.reduce_mean(Pz, axis=0, keep_dims=True)
+        mean_qz = tf.reduce_mean(z, axis=0, keep_dims=True)
+        mean_loss = tf.reduce_mean(tf.square(mean_pz - mean_qz))
+        cov_pz = tf.matmul(Pz - mean_pz, Pz - mean_pz,
+                           transpose_a=True) / (config.batch_size - 1)
+        cov_qz = tf.matmul(z - mean_qz, z - mean_qz,
+                           transpose_a=True) / (config.batch_size - 1)
+        cov_loss = tf.reduce_mean(tf.square(cov_pz - cov_qz))
+        pretrain_loss = cov_loss + mean_loss
+        update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
+        with tf.control_dependencies(update_ops):
+            opt = solver.minimize(pretrain_loss, var_list=Encoder.trainable_variables)
+            with tf.control_dependencies([opt]):
+                p_loss = tf.identity(pretrain_loss)
+        return p_loss
+    p_loss = pretrain(dataset.get_next())
+
     print("Building eval module...")
 
     fixed_z = tf.constant(np.random.normal(size=[config.example_nums, config.dim_z]), dtype=tf.float32)
@@ -91,14 +139,21 @@ def training_loop(config: Config):
         fixed_x1_, _ = get_fixed_x(sess, dataset, config.example_nums, config.batch_size)
         print("Completing all work, iteration now start, consuming %s " % timer.runing_time_format)
         print("Start iterations...")
+        print("Start pretraining of Encoder...")
+        for iteration in range(500):
+            p_loss_ = sess.run(p_loss)
+            if iteration % 50 == 0:
+                print("Pretrain_step %d, p_loss %f" % (iteration, p_loss_))
+        print("Pretraining of Encoder Done! p_loss %f. Now start training..." % p_loss_)
         for iteration in range(config.total_step):
-            loss_, r_loss_, kl_loss_, s_loss_, sw_sum_, lr_ = \
-                sess.run([loss, r_loss, kl_loss, s_loss, s_w, learning_rate])
+            loss_, r_loss_, m_loss_, s_loss_, sw_sum_, lr_ = \
+                sess.run([loss, r_loss, m_loss, s_loss, s_w, learning_rate])
+            a_loss_ = sess.run(a_loss)
             if iteration % config.print_loss_per_steps == 0:
                 timer.update()
-                print("step %d, loss %f, r_loss_ %f, kl_loss_ %f, s_loss_ %f, sw_prod %f, "
+                print("step %d, loss %f, r_loss_ %f, m_loss_ %f, s_loss_ %f, a_loss %f, sw_prod %f, "
                       "learning_rate % f, consuming time %s" %
-                      (iteration, loss_, r_loss_, kl_loss_, s_loss_, np.prod(sw_sum_)**(1/50),
+                      (iteration, loss_, r_loss_, m_loss_, s_loss_, a_loss_, np.prod(sw_sum_)**(1/50),
                        lr_, timer.runing_time_format))
             if iteration % config.eval_per_steps == 0:
                 o_dict_ = sess.run(o_dict, {fixed_x: fixed_x_, fixed_x0: fixed_x0_, fixed_x1: fixed_x1_})
@@ -159,3 +214,5 @@ def make_mask(neighbour, index):
     mask = tf.reduce_sum(tf.cast(tf.equal(index, neighbour), tf.int32), 2)
     mask = tf.cast(tf.greater(mask + tf.transpose(mask), 0), tf.float32)
     return mask
+
+

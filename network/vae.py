@@ -58,3 +58,31 @@ def reparametric(mu, log_sigma, distribution='normal', name=None):
     else:
         z = tf.multiply(epi, sigma) + mu
     return z
+
+
+class Discriminator(AbstractArch):
+    def __init__(self, dim_z, hidden_num, num_layer, pz_scale, nowozin_trick=False,
+                 exceptions=None, name="Discriminator"):
+        super(Discriminator, self).__init__(name, exceptions)
+        self.dim_z = dim_z
+        self.hidden_num = hidden_num
+        self.num_layer = num_layer
+        self.nowozin_trick = nowozin_trick
+        self.pz_scale = pz_scale
+
+    def apply(self, z, is_training=True):
+        hi = z
+        for i in range(self.num_layer):
+            hi = ops.linear(hi, self.hidden_num, scope='hidden%d_linear' % i)
+            hi = tf.nn.relu(hi)
+        hi = ops.linear(hi, 1, scope='final_linear')
+        if self.nowozin_trick:
+            sigma2_p = float(self.pz_scale) ** 2
+            normsq = tf.reduce_sum(tf.square(z), 1)
+            hi = hi - normsq / 2. / sigma2_p - 0.5 * tf.log(2. * np.pi) - 0.5 * self.dim_z * np.log(sigma2_p)
+        return hi
+
+    def __call__(self, z, is_training, reuse=tf.AUTO_REUSE):
+        with tf.variable_scope(self.name, values=[z], reuse=reuse):
+            outputs = self.apply(z=z, is_training=is_training)
+        return outputs

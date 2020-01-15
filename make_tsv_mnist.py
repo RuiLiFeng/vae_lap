@@ -41,7 +41,7 @@ def main(config):
     with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
         sess.run([tf.global_variables_initializer(), dataset.initializer])
         print("Restore Encoder...")
-        saver.restore(sess, config['model_dir'] + '/en.ckpt-40000')
+        saver.restore(sess, config['model_dir'] + '/en.ckpt-30000')
         print('Generate embeddings...')
 
         f = open(config['model_dir'] + '/embeddings.tsv', 'wt')

@@ -1,6 +1,7 @@
 import tensorflow as tf
 from network.abstract_arch import AbstractArch
 import network.wvae_ops as ops
+import numpy as np
 
 
 datashapes = {}
@@ -17,6 +18,7 @@ class Encoder(AbstractArch):
         self.opts = opts
 
     def __call__(self, inputs, is_training=True, reuse=tf.AUTO_REUSE):
+        is_training = tf.cast(is_training, tf.bool)
         opts = self.opts
         if opts['e_noise'] == 'add_noise':
             # Particular instance of the implicit random encoder
@@ -32,7 +34,7 @@ class Encoder(AbstractArch):
         num_units = opts['e_num_filters']
         num_layers = opts['e_num_layers']
 
-        with tf.variable_scope("encoder", reuse=reuse):
+        with tf.variable_scope(self.name, reuse=reuse):
             if opts['e_arch'] == 'mlp':
                 # Encoder uses only fully connected layers with ReLus
                 hi = inputs
@@ -82,7 +84,8 @@ class Encoder(AbstractArch):
                 # Mapping back to the [-1,1]^zdim box
                 res = tf.nn.tanh(res)
 
-            return res, noise_matrix
+            # return res, noise_matrix
+            return res, noise_matrix, res
 
 
 class Decoder(AbstractArch):
@@ -90,12 +93,13 @@ class Decoder(AbstractArch):
         super(Decoder, self).__init__(name, exceptions)
         self.opts = opts
 
-    def __call__(self, noise, is_training=True, reuse=tf.AUTO_REUSE):
+    def __call__(self, noise, is_training=True, flatten=False, reuse=tf.AUTO_REUSE):
         opts = self.opts
         output_shape = datashapes[opts['dataset']]
         num_units = opts['g_num_filters']
+        is_training = tf.cast(is_training, tf.bool)
 
-        with tf.variable_scope("generator", reuse=reuse):
+        with tf.variable_scope(self.name, reuse=reuse):
             if opts['g_arch'] == 'mlp':
                 # Architecture with only fully connected layers and ReLUs
                 layer_x = noise
@@ -125,7 +129,7 @@ class Decoder(AbstractArch):
             else:
                 raise ValueError('%s Unknown decoder architecture' % opts['g_arch'])
 
-            return res
+            return tf.transpose(res[0], [0, 3, 1, 2])
 
 def dcgan_encoder(opts, inputs, is_training=False, reuse=False):
     num_units = opts['e_num_filters']
@@ -133,7 +137,7 @@ def dcgan_encoder(opts, inputs, is_training=False, reuse=False):
     layer_x = inputs
     for i in range(num_layers):
         scale = 2**(num_layers - i - 1)
-        layer_x = ops.conv2d(opts, layer_x, num_units / scale,
+        layer_x = ops.conv2d(opts, layer_x, num_units // scale,
                              scope='h%d_conv' % i)
         if opts['batch_norm']:
             layer_x = ops.batch_norm(opts, layer_x, is_training,
@@ -151,9 +155,9 @@ def dcgan_encoder(opts, inputs, is_training=False, reuse=False):
 def ali_encoder(opts, inputs, is_training=False, reuse=False):
     num_units = opts['e_num_filters']
     layer_params = []
-    layer_params.append([5, 1, num_units / 8])
-    layer_params.append([4, 2, num_units / 4])
-    layer_params.append([4, 1, num_units / 2])
+    layer_params.append([5, 1, num_units // 8])
+    layer_params.append([4, 2, num_units // 4])
+    layer_params.append([4, 1, num_units // 2])
     layer_params.append([4, 2, num_units])
     layer_params.append([4, 1, num_units * 2])
     # For convolution: (n - k) / stride + 1 = s
@@ -163,7 +167,7 @@ def ali_encoder(opts, inputs, is_training=False, reuse=False):
     width = int(layer_x.get_shape()[2])
     assert height == width
     for i, (kernel, stride, channels) in enumerate(layer_params):
-        height = (height - kernel) / stride + 1
+        height = (height - kernel) // stride + 1
         width = height
         layer_x = ops.conv2d(
             opts, layer_x, channels, d_h=stride, d_w=stride,
@@ -182,7 +186,7 @@ def ali_encoder(opts, inputs, is_training=False, reuse=False):
         layer_x = ops.batch_norm(opts, layer_x, is_training,
                                  reuse, scope='hfinal_bn')
     layer_x = ops.lrelu(layer_x, 0.1)
-    layer_x = ops.conv2d(opts, layer_x, num_units / 2, d_h=1, d_w=1,
+    layer_x = ops.conv2d(opts, layer_x, num_units // 2, d_h=1, d_w=1,
                          scope='conv2d_1x1_2', conv_filters_dim=1)
 
     if opts['e_noise'] != 'gaussian':
@@ -232,11 +236,11 @@ def dcgan_decoder(opts, noise, is_training=False, reuse=False):
     batch_size = tf.shape(noise)[0]
     num_layers = opts['g_num_layers']
     if opts['g_arch'] == 'dcgan':
-        height = output_shape[0] / 2**num_layers
-        width = output_shape[1] / 2**num_layers
+        height = output_shape[0] // 2**num_layers
+        width = output_shape[1] // 2**num_layers
     elif opts['g_arch'] == 'dcgan_mod':
-        height = output_shape[0] / 2**(num_layers - 1)
-        width = output_shape[1] / 2**(num_layers - 1)
+        height = output_shape[0] // 2**(num_layers - 1)
+        width = output_shape[1] // 2**(num_layers - 1)
 
     h0 = ops.linear(
         opts, noise, num_units * height * width, scope='h0_lin')
@@ -246,7 +250,7 @@ def dcgan_decoder(opts, noise, is_training=False, reuse=False):
     for i in range(num_layers - 1):
         scale = 2**(i + 1)
         _out_shape = [batch_size, height * scale,
-                      width * scale, num_units / scale]
+                      width * scale, num_units // scale]
         layer_x = ops.deconv2d(opts, layer_x, _out_shape,
                                scope='h%d_deconv' % i)
         if opts['batch_norm']:
@@ -276,10 +280,10 @@ def ali_decoder(opts, noise, is_training=False, reuse=False):
     num_units = opts['g_num_filters']
     layer_params = []
     layer_params.append([4, 1, num_units])
-    layer_params.append([4, 2, num_units / 2])
-    layer_params.append([4, 1, num_units / 4])
-    layer_params.append([4, 2, num_units / 8])
-    layer_params.append([5, 1, num_units / 8])
+    layer_params.append([4, 2, num_units // 2])
+    layer_params.append([4, 1, num_units // 4])
+    layer_params.append([4, 2, num_units // 8])
+    layer_params.append([5, 1, num_units // 8])
     # For convolution: (n - k) / stride + 1 = s
     # For transposed: (s - 1) * stride + k = n
     layer_x = noise
@@ -300,7 +304,7 @@ def ali_decoder(opts, noise, is_training=False, reuse=False):
     assert width == data_width
 
     # Then two 1x1 convolutions.
-    layer_x = ops.conv2d(opts, layer_x, num_units / 8, d_h=1, d_w=1,
+    layer_x = ops.conv2d(opts, layer_x, num_units // 8, d_h=1, d_w=1,
                          scope='conv2d_1x1', conv_filters_dim=1)
     if opts['batch_norm']:
         layer_x = ops.batch_norm(opts, layer_x,
@@ -332,7 +336,7 @@ def began_decoder(opts, noise, is_training=False, reuse=False):
         else:
             if i != num_layers - 1:
                 # Upsampling by factor of 2 with NN
-                scale = 2 ** (i / 3 + 1)
+                scale = 2 ** (i // 3 + 1)
                 layer_x = ops.upsample_nn(layer_x, [scale * 8, scale * 8],
                                           scope='h%d_upsample' % i, reuse=reuse)
                 # Skip connection
@@ -390,3 +394,45 @@ def transform_noise(opts, code, eps):
     res = tf.matmul(eps, A)
     res = tf.reshape(res, [-1, opts['zdim']])
     return res, A
+
+
+class Discriminator(AbstractArch):
+    def __init__(self, opts,
+                 exceptions=None, name="Discriminator"):
+        super(Discriminator, self).__init__(name, exceptions)
+        self.opts = opts
+
+    def apply(self, z, is_training=True, reuse=tf.AUTO_REUSE):
+        inputs = z
+        opts = self.opts
+        num_units = opts['d_num_filters']
+        num_layers = opts['d_num_layers']
+        nowozin_trick = opts['gan_p_trick']
+        # No convolutions as GAN happens in the latent space
+        with tf.variable_scope('z_adversary', reuse=reuse):
+            hi = inputs
+            for i in range(num_layers):
+                hi = ops.linear(opts, hi, num_units, scope='h%d_lin' % (i + 1))
+                hi = tf.nn.relu(hi)
+            hi = ops.linear(opts, hi, 1, scope='hfinal_lin')
+            if nowozin_trick:
+                # We are doing GAN between our model Qz and the true Pz.
+                # Imagine we know analytical form of the true Pz.
+                # The optimal discriminator for D_JS(Pz, Qz) is given by:
+                # Dopt(x) = log dPz(x) - log dQz(x)
+                # And we know exactly dPz(x). So add log dPz(x) explicitly
+                # to the discriminator and let it learn only the remaining
+                # dQz(x) term. This appeared in the AVB paper.
+                assert opts['pz'] == 'normal', \
+                    'The GAN Pz trick is currently available only for Gaussian Pz'
+                sigma2_p = float(opts['pz_scale']) ** 2
+                normsq = tf.reduce_sum(tf.square(inputs), 1)
+                hi = hi - normsq / 2. / sigma2_p \
+                     - 0.5 * tf.log(2. * np.pi) \
+                     - 0.5 * opts['zdim'] * np.log(sigma2_p)
+        return hi
+
+    def __call__(self, z, is_training, reuse=tf.AUTO_REUSE):
+        with tf.variable_scope(self.name, values=[z], reuse=reuse):
+            outputs = self.apply(z=z, is_training=is_training)
+        return outputs

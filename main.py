@@ -38,6 +38,12 @@ parser.add_argument(
     '--laplace_lambda', type=float, default=1.0,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
+    '--e_pretrain_sample_size', type=int, default=1000,
+    help='Default overall batchsize (default: %(default)s)')
+parser.add_argument(
+    '--wae_lambda', type=float, default=1.0,
+    help='Default overall batchsize (default: %(default)s)')
+parser.add_argument(
     '--laplace_lambda_x', type=float, default=1.0,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
