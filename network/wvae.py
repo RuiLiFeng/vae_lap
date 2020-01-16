@@ -19,6 +19,7 @@ class Encoder(AbstractArch):
 
     def __call__(self, inputs, is_training=True, reuse=tf.AUTO_REUSE):
         is_training = tf.cast(is_training, tf.bool)
+        inputs = tf.transpose(inputs, [0, 2, 3, 1])
         opts = self.opts
         if opts['e_noise'] == 'add_noise':
             # Particular instance of the implicit random encoder

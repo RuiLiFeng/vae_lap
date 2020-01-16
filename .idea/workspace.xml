@@ -2,21 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="80e2cdbd-6f7f-49eb-815e-0e4606990859" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/metrci/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/metrci/perceptual_path_length.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/network/vae_mnist_wae.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/training_loop/compute_w_mnist_wae.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/training_loop/mnist_wae.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/training_loop/mnist_wae_valina.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/wae_config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/metric/blurriness.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.npy" beforeDir="false" afterPath="$PROJECT_DIR$/index.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/make_tsv_mnist.py" beforeDir="false" afterPath="$PROJECT_DIR$/make_tsv_mnist.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/network/vae.py" beforeDir="false" afterPath="$PROJECT_DIR$/network/vae.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrci/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/metrci/perceptual_path_length.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/network/wvae.py" beforeDir="false" afterPath="$PROJECT_DIR$/network/wvae.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pair_dis.npy" beforeDir="false" afterPath="$PROJECT_DIR$/pair_dis.npy" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/rep.npy" beforeDir="false" afterPath="$PROJECT_DIR$/rep.npy" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/training_loop/mnist_lap_knn_wae.py" beforeDir="false" afterPath="$PROJECT_DIR$/training_loop/mnist_lap_knn_wae.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,56 +15,13 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DockManager">
-    <window id="2">
-      <content type="file-editors">
-        <state>
-          <leaf>
-            <file pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/training_loop/mnist_wae.py">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="771">
-                    <caret line="35" column="50" lean-forward="true" selection-start-line="35" selection-start-column="50" selection-end-line="35" selection-end-column="50" />
-                    <folding>
-                      <element signature="e#0#23#0" expanded="true" />
-                    </folding>
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/make_tsv_mnist.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="515">
-              <caret line="31" column="17" selection-start-line="31" selection-start-column="17" selection-end-line="31" selection-end-column="17" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/utils/wae_config.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1116">
-              <caret line="106" column="28" selection-start-line="106" selection-start-column="28" selection-end-line="106" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_loop/mnist_lap_knn_wae.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
-              <caret line="35" column="63" selection-start-line="35" selection-start-column="63" selection-end-line="35" selection-end-column="63" />
+            <state relative-caret-position="648">
+              <caret line="26" column="21" selection-start-line="26" selection-start-column="21" selection-end-line="26" selection-end-column="21" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -83,12 +30,60 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/training_loop/mnist_valina.py">
+        <entry file="file://$PROJECT_DIR$/network/wvae.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="864">
-              <caret line="24" column="37" selection-start-line="24" selection-start-column="37" selection-end-line="24" selection-end-column="37" />
+            <state relative-caret-position="760">
+              <caret line="143" column="64" lean-forward="true" selection-start-line="143" selection-start-column="64" selection-end-line="143" selection-end-column="64" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/training_loop/mnist_wae.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="396">
+              <caret line="32" column="41" lean-forward="true" selection-start-line="32" selection-start-column="41" selection-end-line="32" selection-end-column="41" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/metric/blurriness.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="288">
+              <caret line="9" selection-start-line="9" selection-end-line="9" />
+              <folding>
+                <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/datasets/datasets.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="11772">
+              <caret line="337" column="4" selection-start-line="337" selection-start-column="4" selection-end-line="337" selection-end-column="4" />
+              <folding>
+                <element signature="e#0#38#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/metric/perceptual_path_length.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3204">
+              <caret line="90" column="41" lean-forward="true" selection-start-line="90" selection-start-column="41" selection-end-line="90" selection-end-column="41" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -97,12 +92,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_loop/mnist_wae_valina.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="27" column="53" selection-start-line="27" selection-start-column="53" selection-end-line="27" selection-end-column="53" />
-              <folding>
-                <element signature="e#2202#2242#0" />
-                <element signature="e#4224#4245#0" />
-              </folding>
+            <state relative-caret-position="864">
+              <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
             </state>
           </provider>
         </entry>
@@ -110,7 +101,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_loop/compute_knn_mnist.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-144">
+            <state relative-caret-position="1260">
               <caret line="54" column="60" selection-start-line="54" selection-start-column="60" selection-end-line="54" selection-end-column="60" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
@@ -120,23 +111,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/metrci/perceptual_path_length.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="485">
-              <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
-              <folding>
-                <element signature="e#264#282#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/training_loop/compute_w.py">
+        <entry file="file://$PROJECT_DIR$/training_loop/compute_w_mnist.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-900">
-              <caret line="14" selection-start-line="14" selection-end-line="14" />
+            <state relative-caret-position="468">
+              <caret line="21" column="53" lean-forward="true" selection-start-line="21" selection-start-column="53" selection-end-line="21" selection-end-column="53" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -147,20 +126,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/training_loop/compute_w_mnist_wae.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="90" column="49" selection-start-line="90" selection-start-column="49" selection-end-line="90" selection-end-column="49" />
-              <folding>
-                <element signature="e#0#23#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/network/vae_mnist_wae.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="96" column="39" selection-start-line="96" selection-start-column="39" selection-end-line="96" selection-end-column="39" />
+            <state relative-caret-position="864">
+              <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" />
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
               </folding>
@@ -233,21 +200,24 @@
         <option value="$PROJECT_DIR$/make_tsv_mnist.py" />
         <option value="$PROJECT_DIR$/network/vae_mnist_wae.py" />
         <option value="$PROJECT_DIR$/utils/wae_config.py" />
-        <option value="$PROJECT_DIR$/network/wvae.py" />
-        <option value="$PROJECT_DIR$/training_loop/mnist_lap_knn_wae.py" />
         <option value="$PROJECT_DIR$/training_loop/mnist_wae.py" />
-        <option value="$PROJECT_DIR$/training_loop/mnist_wae_valina.py" />
         <option value="$PROJECT_DIR$/training_loop/compute_w_mnist_wae.py" />
         <option value="$PROJECT_DIR$/training_loop/compute_knn_mnist_wae.py" />
         <option value="$PROJECT_DIR$/metrci.py" />
         <option value="$PROJECT_DIR$/metrci/perceptual_path_length.py" />
+        <option value="$PROJECT_DIR$/training_loop/mnist_wae_valina.py" />
+        <option value="$PROJECT_DIR$/metric/perceptual_path_length.py" />
+        <option value="$PROJECT_DIR$/training_loop/mnist_lap_knn_wae.py" />
+        <option value="$PROJECT_DIR$/metric/blurriness.py" />
+        <option value="$PROJECT_DIR$/metric/projector2d.py" />
+        <option value="$PROJECT_DIR$/network/wvae.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="528" />
-    <option name="y" value="305" />
-    <option name="width" value="1096" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
     <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -256,6 +226,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -271,7 +242,7 @@
             <path>
               <item name="vae_lap" type="b2602c69:ProjectViewProjectNode" />
               <item name="vae_lap" type="462c0819:PsiDirectoryNode" />
-              <item name="metrci" type="462c0819:PsiDirectoryNode" />
+              <item name="metric" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="vae_lap" type="b2602c69:ProjectViewProjectNode" />
@@ -292,7 +263,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -359,18 +329,19 @@
       <workItem from="1577270494331" duration="15438000" />
       <workItem from="1578040838824" duration="2290000" />
       <workItem from="1578288891395" duration="25299000" />
-      <workItem from="1578989685324" duration="12099000" />
+      <workItem from="1578989685324" duration="30479000" />
+      <workItem from="1579183314808" duration="7382000" />
+      <workItem from="1579201284896" duration="312000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="239440000" />
+    <option name="totallyTimeSpent" value="265514000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20628998" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.13646056" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -384,8 +355,8 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Terminal" order="11" visible="true" weight="0.17028199" />
-      <window_info anchor="bottom" id="Python Console" order="12" weight="0.22234273" />
+      <window_info anchor="bottom" id="Terminal" order="11" weight="0.1583514" />
+      <window_info anchor="bottom" id="Python Console" order="12" weight="0.22968581" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -426,31 +397,6 @@
     <option name="version" value="1" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/training_loop/vae_celeba_cir_lap.py" />
-    <entry file="file://$USER_HOME$/Anaconda3/envs/tf_base/Lib/site-packages/tensorflow_datasets/core/registered.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="175" column="4" selection-start-line="175" selection-start-column="4" selection-end-line="175" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Anaconda3/envs/tf_base/Lib/site-packages/tensorflow_datasets/__init__.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/training_loop/valina_vae.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="25" column="19" selection-start-line="25" selection-start-column="19" selection-end-line="25" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Anaconda3/envs/tf_base/Lib/site-packages/tensorboard/plugins/projector/projector_config_pb2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2367">
-          <caret line="196" selection-start-line="196" selection-end-line="196" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Anaconda3/envs/tf_base/Lib/site-packages/tensorboard/plugins/projector/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="307">
@@ -588,26 +534,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/datasets/datasets.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11124">
-          <caret line="319" column="5" selection-start-line="319" selection-start-column="5" selection-end-line="319" selection-end-column="5" />
-          <folding>
-            <element signature="e#0#38#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/training_loop/compute_w_mnist.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3708">
-          <caret line="111" selection-start-line="111" selection-end-line="138" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Documents/WeChat Files/wxid_emz05gko7x5q22/FileStorage/File/2019-12/page_rank.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="477">
@@ -665,13 +591,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/network/wvae_ops.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3672">
-          <caret line="104" column="31" selection-start-line="104" selection-start-column="31" selection-end-line="104" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/train.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -685,19 +604,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../wae-master/wae-master/datasets.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7887">
-          <caret line="250" column="55" lean-forward="true" selection-start-line="250" selection-start-column="55" selection-end-line="250" selection-end-column="55" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../wae-master/wae-master/datasets.py" />
     <entry file="file://$PROJECT_DIR$/network/vae.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="762">
@@ -705,33 +612,6 @@
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="16" column="66" selection-start-line="16" selection-start-column="39" selection-end-line="16" selection-end-column="66" />
-          <folding>
-            <element signature="e#0#25#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/network/wvae.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="819">
-          <caret line="273" column="28" selection-start-line="273" selection-start-column="28" selection-end-line="273" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/utils/wae_config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1116">
-          <caret line="106" column="28" selection-start-line="106" selection-start-column="28" selection-end-line="106" selection-end-column="28" />
         </state>
       </provider>
     </entry>
@@ -755,19 +635,49 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_loop/mnist_lap_knn_wae.py">
+    <entry file="file://$PROJECT_DIR$/training_loop/compute_knn_mnist_wae.py" />
+    <entry file="file://$PROJECT_DIR$/metrci.py" />
+    <entry file="file://$USER_HOME$/Anaconda3/envs/tf_base/Lib/site-packages/keras_applications/vgg16.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="35" column="63" selection-start-line="35" selection-start-column="63" selection-end-line="35" selection-end-column="63" />
+        <state relative-caret-position="579">
+          <caret line="101" column="51" lean-forward="true" selection-start-line="101" selection-start-column="51" selection-end-line="101" selection-end-column="51" />
           <folding>
-            <element signature="e#0#23#0" expanded="true" />
+            <element signature="e#166#204#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Anaconda3/envs/tf_base/Lib/site-packages/tensorflow/python/keras/applications/vgg16.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="31" column="17" selection-start-line="31" selection-start-column="17" selection-end-line="31" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/metrci/perceptual_path_length.py" />
+    <entry file="file://$PROJECT_DIR$/utils/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="134">
+          <caret line="238" column="7" lean-forward="true" selection-start-line="238" selection-start-column="7" selection-end-line="238" selection-end-column="7" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="16" column="66" selection-start-line="16" selection-start-column="39" selection-end-line="16" selection-end-column="66" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/training_loop/mnist_valina.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="864">
+        <state relative-caret-position="684">
           <caret line="24" column="37" selection-start-line="24" selection-start-column="37" selection-end-line="24" selection-end-column="37" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
@@ -775,20 +685,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_loop/mnist_wae_valina.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="27" column="53" selection-start-line="27" selection-start-column="53" selection-end-line="27" selection-end-column="53" />
-          <folding>
-            <element signature="e#2202#2242#0" />
-            <element signature="e#4224#4245#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/training_loop/compute_w.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-900">
+        <state relative-caret-position="216">
           <caret line="14" selection-start-line="14" selection-end-line="14" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
@@ -796,42 +695,71 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_loop/compute_knn_mnist_wae.py">
+    <entry file="file://$PROJECT_DIR$/utils/wae_config.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1188">
-          <caret line="33" column="23" lean-forward="true" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
+        <state relative-caret-position="-1340">
+          <caret line="57" selection-start-line="57" selection-end-line="57" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network/wvae_ops.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2844">
+          <caret line="81" column="4" selection-start-line="81" selection-start-column="4" selection-end-line="81" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/metric/projector2d.py" />
+    <entry file="file://$PROJECT_DIR$/training_loop/mnist_lap_knn_wae.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="648">
+          <caret line="26" column="21" selection-start-line="26" selection-start-column="21" selection-end-line="26" selection-end-column="21" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_loop/compute_w_mnist_wae.py">
+    <entry file="file://$PROJECT_DIR$/metric/blurriness.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="90" column="49" selection-start-line="90" selection-start-column="49" selection-end-line="90" selection-end-column="49" />
+        <state relative-caret-position="288">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/training_loop/mnist_wae.py">
+    <entry file="file://$PROJECT_DIR$/datasets/datasets.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="771">
-          <caret line="35" column="50" lean-forward="true" selection-start-line="35" selection-start-column="50" selection-end-line="35" selection-end-column="50" />
+        <state relative-caret-position="11772">
+          <caret line="337" column="4" selection-start-line="337" selection-start-column="4" selection-end-line="337" selection-end-column="4" />
           <folding>
-            <element signature="e#0#23#0" expanded="true" />
+            <element signature="e#0#38#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/metrci.py">
-      <provider selected="true" editor-type-id="text-editor" />
+    <entry file="file://$PROJECT_DIR$/metric/perceptual_path_length.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3204">
+          <caret line="90" column="41" lean-forward="true" selection-start-line="90" selection-start-column="41" selection-end-line="90" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training_loop/mnist_wae_valina.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="864">
+          <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/training_loop/compute_knn_mnist.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-144">
+        <state relative-caret-position="1260">
           <caret line="54" column="60" selection-start-line="54" selection-start-column="60" selection-end-line="54" selection-end-column="60" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
@@ -840,12 +768,42 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/metrci/perceptual_path_length.py">
+    <entry file="file://$PROJECT_DIR$/training_loop/compute_w_mnist.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="485">
-          <caret line="20" lean-forward="true" selection-start-line="20" selection-end-line="20" />
+        <state relative-caret-position="468">
+          <caret line="21" column="53" lean-forward="true" selection-start-line="21" selection-start-column="53" selection-end-line="21" selection-end-column="53" />
           <folding>
-            <element signature="e#264#282#0" expanded="true" />
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training_loop/compute_w_mnist_wae.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="864">
+          <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network/wvae.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="760">
+          <caret line="143" column="64" lean-forward="true" selection-start-line="143" selection-start-column="64" selection-end-line="143" selection-end-column="64" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/training_loop/mnist_wae.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="32" column="41" lean-forward="true" selection-start-line="32" selection-start-column="41" selection-end-line="32" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
