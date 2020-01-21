@@ -14,7 +14,7 @@ parser.add_argument(
     '--tfds_dir', type=str, default='/gdata/tfds',
     help='Default location where data is stored (default: %(default)s)')
 parser.add_argument(
-    '--record_dir', type=str, default='/gdata/fengrl/records/mnist',
+    '--record_dir', type=str, default='/gdata/fengrl/records/mnist_true',
     help='Default location where data is stored (default: %(default)s)')
 parser.add_argument(
     '--batch_size', type=int, default=256,
@@ -41,7 +41,7 @@ parser.add_argument(
     '--e_pretrain_sample_size', type=int, default=1000,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
-    '--wae_lambda', type=float, default=1.0,
+    '--wae_lambda', type=float, default=10.0,
     help='Default overall batchsize (default: %(default)s)')
 parser.add_argument(
     '--laplace_lambda_x', type=float, default=1.0,

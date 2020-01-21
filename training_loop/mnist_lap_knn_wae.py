@@ -23,9 +23,9 @@ def training_loop(config: Config):
 
     global_step = tf.get_variable(name='global_step', initializer=tf.constant(0), trainable=False)
     print("Constructing networks...")
-    valina_encoder = vae.Encoder(opts, exceptions=['opt'], name='valina_encoder')
-    Encoder = vae.Encoder(opts, exceptions=['opt'], name='Encoder')
-    Decoder = vae.Decoder(opts, exceptions=['opt'], name='Decoder')
+    valina_encoder = vae.Encoder(opts, exceptions=['opt'], name='Encoder')
+    Encoder = vae.Encoder(opts, exceptions=['opt'], name='WAEn')
+    Decoder = vae.Decoder(opts, exceptions=['opt'], name='WADe')
     Discriminator = vae.Discriminator(opts, exceptions=['opt'])
 
     def lip_metric(inputs):
@@ -46,7 +46,7 @@ def training_loop(config: Config):
     PPL = ppl.PPL_mnist(epsilon=0.01, sampling='full', generator=generator, d_metric=d_metric)
     Lip_PPL = ppl.PPL_mnist(epsilon=0.01, sampling='full', generator=lip_generator, d_metric=lip_metric)
 
-    learning_rate = tf.train.exponential_decay(0.1 * opts['lr'], global_step, config.decay_step,
+    learning_rate = tf.train.exponential_decay(config.lr, global_step, config.decay_step,
                                                config.decay_coef, staircase=False)
     solver = tf.train.AdamOptimizer(learning_rate=learning_rate, name='opt', beta1=opts['adam_beta1'])
     adv_solver = tf.train.AdamOptimizer(learning_rate=learning_rate, name='opt', beta1=opts['adam_beta1'])
@@ -158,9 +158,7 @@ def training_loop(config: Config):
         init = [tf.global_variables_initializer(), dataset.initializer]
         saver_e = tf.train.Saver(Encoder.restore_variables)
         saver_d = tf.train.Saver(Decoder.restore_variables)
-        valina_encoder_dict = {v.name.replace('valina_encoder', 'Encoder'): v for v in valina_encoder.restore_variables}
-        saver_v = tf.train.Saver(valina_encoder_dict)
-        print(valina_encoder_dict)
+        saver_v = tf.train.Saver(valina_encoder.restore_variables)
 
     print('Starting training...')
     with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
@@ -190,9 +188,9 @@ def training_loop(config: Config):
             a_loss_ = sess.run(a_loss)
             if iteration % config.print_loss_per_steps == 0:
                 timer.update()
-                print("step %d, loss %f, r_loss_ %f, m_loss_ %f, s_loss_ %f, a_loss %f, sw_prod %f, "
+                print("step %d, loss %f, r_loss_ %f, m_loss_ %f, s_loss_ %f, a_loss %f "
                       "learning_rate % f, consuming time %s" %
-                      (iteration, loss_, r_loss_, m_loss_, s_loss_, a_loss_, np.prod(sw_sum_)**(1/50),
+                      (iteration, loss_, r_loss_, m_loss_, s_loss_, a_loss_,
                        lr_, timer.runing_time_format))
             if iteration % 1000 == 0:
                 sa_loss_ = 0.0

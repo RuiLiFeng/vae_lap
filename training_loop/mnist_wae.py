@@ -6,6 +6,7 @@ import network.wvae as vae
 import network.arch_ops as ops
 import utils.wae_config as w_config
 from argparse import ArgumentParser
+from metric import perceptual_path_length as ppl
 
 
 EPS = 1e-10
@@ -18,18 +19,37 @@ def training_loop(config: Config):
     print('Loading %s dataset...' % config.dataset_name)
     dataset = load_mnist_KNN_from_record(config.record_dir + '/Mnist20knn5_rep.tfrecords', config.batch_size)
     dataset = dataset.make_initializable_iterator()
-    laplace_sigma2 = np.load(config.record_dir + '/knn5sigma2.npy') / (-np.log(config.laplace_a))
+    # laplace_sigma2 = np.load(config.record_dir + '/knn5sigma2.npy') / (-np.log(config.laplace_a))
 
     global_step = tf.get_variable(name='global_step', initializer=tf.constant(0), trainable=False)
     print("Constructing networks...")
-    Encoder = vae.Encoder(opts, exceptions=['opt'], name='Encoder')
-    Decoder = vae.Decoder(opts, exceptions=['opt'], name='Decoder')
+    valina_encoder = vae.Encoder(opts, exceptions=['opt'], name='Encoder')
+    Encoder = vae.Encoder(opts, exceptions=['opt'], name='WAEn')
+    Decoder = vae.Decoder(opts, exceptions=['opt'], name='WADe')
     Discriminator = vae.Discriminator(opts, exceptions=['opt'])
-    learning_rate = tf.train.exponential_decay(opts['lr'], global_step, config.decay_step,
+
+    def lip_metric(inputs):
+        return inputs
+
+    def d_metric(inputs):
+        _, _, outputs = valina_encoder(inputs, True)
+        return outputs
+
+    def generator(inputs):
+        outputs = Decoder(inputs, True, False)
+        return outputs
+
+    def lip_generator(inputs):
+        _, _, outputs = Encoder(inputs, True)
+        return outputs
+
+    PPL = ppl.PPL_mnist(epsilon=0.01, sampling='full', generator=generator, d_metric=d_metric)
+    Lip_PPL = ppl.PPL_mnist(epsilon=0.01, sampling='full', generator=lip_generator, d_metric=lip_metric)
+
+    learning_rate = tf.train.exponential_decay(config.lr, global_step, config.decay_step,
                                                config.decay_coef, staircase=False)
     solver = tf.train.AdamOptimizer(learning_rate=learning_rate, name='opt', beta1=opts['adam_beta1'])
     adv_solver = tf.train.AdamOptimizer(learning_rate=learning_rate, name='opt', beta1=opts['adam_beta1'])
-
     print("Building tensorflow graph...")
 
     def train_step(data):
@@ -77,6 +97,8 @@ def training_loop(config: Config):
                 l6 = tf.identity(loss_adv)
         return l1, l2, l3, l6
 
+    loss, r_loss, m_loss,  a_loss = train_step(dataset.get_next())
+
     def pretrain(data):
         image, rep, label, neighbour, index = data
         mu_z, log_sigma_z, z = Encoder(image, is_training=True)
@@ -96,9 +118,8 @@ def training_loop(config: Config):
             with tf.control_dependencies([opt]):
                 p_loss = tf.identity(pretrain_loss)
         return p_loss
-
     p_loss = pretrain(dataset.get_next())
-    loss, r_loss, m_loss, a_loss = train_step(dataset.get_next())
+
     print("Building eval module...")
 
     fixed_z = tf.constant(np.random.normal(size=[config.example_nums, config.dim_z]), dtype=tf.float32)
@@ -110,23 +131,39 @@ def training_loop(config: Config):
     input_dict = {'fixed_z': fixed_z, 'fixed_z0': fixed_z0, 'fixed_z1': fixed_z1, 'fixed_x': fixed_x,
                   'fixed_x0': fixed_x0, 'fixed_x1': fixed_x1, 'num_midpoints': config.num_midpoints}
 
-    def eval_step():
+    def sample_step():
         out_dict = generate_sample(Decoder, input_dict)
         out_dict.update(reconstruction_sample(Encoder, Decoder, input_dict))
         out_dict.update({'fixed_x': fixed_x, 'fixed_x0': fixed_x0, 'fixed_x1': fixed_x1})
         return out_dict
 
-    o_dict = eval_step()
+    o_dict = sample_step()
+
+    def eval_step(img1, img2):
+        z0 = tf.random.normal(shape=[config.batch_size, config.dim_z], mean=0.0, stddev=1.0)
+        z1 = tf.random.normal(shape=[config.batch_size, config.dim_z], mean=0.0, stddev=1.0)
+        _, _, img1_z = Encoder(img1, True)
+        _, _, img2_z = Encoder(img2, True)
+        ppl_sample_loss = PPL(z0, z1)
+        ppl_de_loss = PPL(img1_z, img2_z)
+        lip_loss = Lip_PPL(img1, img2)
+        return ppl_sample_loss, ppl_de_loss, lip_loss
+
+    img_1, _, _, _, _ = dataset.get_next()
+    img_2, _, _, _, _ = dataset.get_next()
+    ppl_sa_loss, ppl_de_loss, lip_loss = eval_step(img_1, img_2)
 
     print("Building init module...")
     with tf.init_scope():
         init = [tf.global_variables_initializer(), dataset.initializer]
         saver_e = tf.train.Saver(Encoder.restore_variables)
         saver_d = tf.train.Saver(Decoder.restore_variables)
+        saver_v = tf.train.Saver(valina_encoder.restore_variables)
 
     print('Starting training...')
     with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
         sess.run(init)
+        saver_v.restore(sess, config.restore_s_dir)
         if config.resume:
             print("Restore vae...")
             saver_e.restore(sess, config.restore_e_dir)
@@ -149,13 +186,25 @@ def training_loop(config: Config):
             loss_, r_loss_, m_loss_, lr_ = \
                 sess.run([loss, r_loss, m_loss, learning_rate])
             a_loss_ = sess.run(a_loss)
-
             if iteration % config.print_loss_per_steps == 0:
                 timer.update()
                 print("step %d, loss %f, r_loss_ %f, m_loss_ %f, a_loss %f "
                       "learning_rate % f, consuming time %s" %
                       (iteration, loss_, r_loss_, m_loss_, a_loss_,
                        lr_, timer.runing_time_format))
+            if iteration % 1000 == 0:
+                sa_loss_ = 0.0
+                de_loss_ = 0.0
+                lip_loss_ = 0.0
+                for _ in range(200):
+                    sa_p, de_p, lip_p = sess.run([ppl_sa_loss, ppl_de_loss, lip_loss])
+                    sa_loss_ += sa_p
+                    de_loss_ += de_p
+                    lip_loss_ += lip_p
+                sa_loss_ /= config.batch_size * 256
+                de_loss_ /= config.batch_size * 256
+                lip_loss_ /= config.batch_size * 256
+                print("ppl_sample %f, ppl_resample %f, lipschitze %f" % (sa_loss_, de_loss_, lip_loss_))
             if iteration % config.eval_per_steps == 0:
                 o_dict_ = sess.run(o_dict, {fixed_x: fixed_x_, fixed_x0: fixed_x0_, fixed_x1: fixed_x1_})
                 for key in o_dict:
