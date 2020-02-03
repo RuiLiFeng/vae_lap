@@ -90,7 +90,7 @@ parser.add_argument(
     '--restore_s_dir', type=str, default='/gdata/fengrl/ckpt/valina_vae/celeb_a/en.ckpt-104000',
     help='seed for np')
 parser.add_argument(
-    '--total_step', type=int, default=250000,
+    '--total_step', type=int, default=70000,
     help='seed for np')
 parser.add_argument(
     '--eval_per_steps', type=int, default=2000,

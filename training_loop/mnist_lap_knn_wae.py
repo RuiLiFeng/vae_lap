@@ -19,7 +19,8 @@ def training_loop(config: Config):
     print('Loading %s dataset...' % config.dataset_name)
     dataset = load_mnist_KNN_from_record(config.record_dir + '/Mnist20knn5_rep.tfrecords', config.batch_size)
     dataset = dataset.make_initializable_iterator()
-    laplace_sigma2 = np.load(config.record_dir + '/knn5sigma2.npy') / (-np.log(config.laplace_a))
+    # laplace_sigma2 = np.load(config.record_dir + '/knn5sigma2.npy') / (-np.log(config.laplace_a))
+    laplace_sigma2 = 1.0 / (-np.log(config.laplace_a))
 
     global_step = tf.get_variable(name='global_step', initializer=tf.constant(0), trainable=False)
     print("Constructing networks...")
@@ -65,8 +66,9 @@ def training_loop(config: Config):
             recon_loss = 0.05 * tf.reduce_mean(tf.reduce_sum(tf.square(image - x), [1, 2, 3]))
         with tf.variable_scope('smooth_loss'):
             mask = make_mask(neighbour, index)
-            s_w = mask * smoother_weight(rep, 'heat', sigma2=laplace_sigma2)
+            s_w = mask * smoother_weight(rep, 'heat', sigma2=laplace_sigma2, mask=mask)
             smooth_loss = batch_laplacian(s_w, z) * config.laplace_lambda
+            s_w_mean = tf.reduce_mean(s_w) * config.batch_size * config.batch_size / (tf.reduce_sum(mask) + EPS)
         with tf.variable_scope('wae_penalty'):
             Pz = tf.random.normal(shape=[config.batch_size, config.dim_z], mean=0.0, stddev=1.0)
             logits_Pz = Discriminator(Pz, True)
@@ -90,7 +92,7 @@ def training_loop(config: Config):
             opt = solver.minimize(loss, var_list=Encoder.trainable_variables + Decoder.trainable_variables)
             with tf.control_dependencies([opt]):
                 l1, l2, l3, l4, l5 = tf.identity(loss), tf.identity(recon_loss), \
-                       tf.identity(loss_match), tf.identity(smooth_loss), tf.identity(s_w)
+                       tf.identity(loss_match), tf.identity(smooth_loss), tf.identity(s_w_mean)
         with tf.control_dependencies([add_global] + update_ops):
             d_opt = adv_solver.minimize(loss_adv, var_list=Discriminator.trainable_variables)
             with tf.control_dependencies([d_opt]):
@@ -156,8 +158,8 @@ def training_loop(config: Config):
     print("Building init module...")
     with tf.init_scope():
         init = [tf.global_variables_initializer(), dataset.initializer]
-        saver_e = tf.train.Saver(Encoder.restore_variables)
-        saver_d = tf.train.Saver(Decoder.restore_variables)
+        saver_e = tf.train.Saver(Encoder.restore_variables, max_to_keep=10)
+        saver_d = tf.train.Saver(Decoder.restore_variables, max_to_keep=10)
         saver_v = tf.train.Saver(valina_encoder.restore_variables)
 
     print('Starting training...')
@@ -182,15 +184,28 @@ def training_loop(config: Config):
             if iteration % 50 == 0:
                 print("Pretrain_step %d, p_loss %f" % (iteration, p_loss_))
         print("Pretraining of Encoder Done! p_loss %f. Now start training..." % p_loss_)
+        loss_list = []
+        r_loss_list = []
+        m_loss_list = []
+        s_loss_list = []
+        a_loss_list = []
+        ppl_sa_list = []
+        ppl_re_list = []
+        lip_list = []
         for iteration in range(config.total_step):
             loss_, r_loss_, m_loss_, s_loss_, sw_sum_, lr_ = \
                 sess.run([loss, r_loss, m_loss, s_loss, s_w, learning_rate])
             a_loss_ = sess.run(a_loss)
             if iteration % config.print_loss_per_steps == 0:
+                loss_list.append(loss_)
+                r_loss_list.append(r_loss_)
+                m_loss_list.append(m_loss_)
+                s_loss_list.append(s_loss_)
+                a_loss_list.append(a_loss_)
                 timer.update()
-                print("step %d, loss %f, r_loss_ %f, m_loss_ %f, s_loss_ %f, a_loss %f "
+                print("step %d, loss %f, r_loss_ %f, m_loss_ %f, s_loss_ %f, sw %f,  a_loss %f "
                       "learning_rate % f, consuming time %s" %
-                      (iteration, loss_, r_loss_, m_loss_, s_loss_, a_loss_,
+                      (iteration, loss_, r_loss_, m_loss_, s_loss_, np.mean(sw_sum_), a_loss_,
                        lr_, timer.runing_time_format))
             if iteration % 1000 == 0:
                 sa_loss_ = 0.0
@@ -204,6 +219,9 @@ def training_loop(config: Config):
                 sa_loss_ /= config.batch_size * 256
                 de_loss_ /= config.batch_size * 256
                 lip_loss_ /= config.batch_size * 256
+                ppl_re_list.append(de_loss_)
+                ppl_sa_list.append(sa_loss_)
+                lip_list.append(lip_loss_)
                 print("ppl_sample %f, ppl_resample %f, lipschitze %f" % (sa_loss_, de_loss_, lip_loss_))
             if iteration % config.eval_per_steps == 0:
                 o_dict_ = sess.run(o_dict, {fixed_x: fixed_x_, fixed_x0: fixed_x0_, fixed_x1: fixed_x1_})
@@ -216,6 +234,9 @@ def training_loop(config: Config):
                              global_step=iteration, write_meta_graph=False)
                 saver_d.save(sess, save_path=config.model_dir + '/de.ckpt',
                              global_step=iteration, write_meta_graph=False)
+                metric_dict = {'r': r_loss_list, 'm': m_loss_list, 's': s_loss_list, 'a': a_loss_list,
+                               'psa': ppl_sa_list, 'pre': ppl_re_list, 'lip': lip_list}
+                np.save(config.model_dir + '/%06d' % iteration + 'metric.npy', metric_dict)
 
 
 def get_fixed_x(sess, dataset, num, batch_size):
@@ -243,14 +264,15 @@ def batch_laplacian(weight, z):
     return tf.reduce_mean(weight * z_pairwise)
 
 
-def smoother_weight(y, kernel='heat', margin=0.4, sigma2=2.5):
+def smoother_weight(y, kernel='heat', margin=0.4, sigma2=2.5, mask=None):
     y1_ = tf.tile(tf.expand_dims(y, 1), [1, y.shape[0].value, 1])
     y2_ = tf.tile(tf.expand_dims(y, 0), [y.shape[0].value, 1, 1])
     pairwise_dis = tf.reduce_sum(tf.square(y1_ - y2_), axis=2)
+    norm = tf.expand_dims(EPS + tf.reduce_sum(pairwise_dis * mask, 1), 1)
     if kernel == 'heat':
-        dis = pairwise_dis / sigma2
+        dis = pairwise_dis * tf.expand_dims(tf.reduce_sum(mask, 1), 1) / (sigma2 * norm)
         w = tf.exp(-dis)
-        w = tf.nn.relu(ops.standardize_batch(w, True)) / 2 + 0.5
+        # w = tf.nn.relu(ops.standardize_batch(w, True)) / 2 + 0.5
         # w = w * tf.cast(w > margin, tf.float32)
 
     else:
