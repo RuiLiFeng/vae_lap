@@ -131,6 +131,7 @@ class ImageDataset(object):
         ds = self.load_dataset(split=split)
         # No filter, no rpeat.
         ds = ds.map(functools.partial(self.eval_transform_fn, seed=self.seed), num_parallel_calls=self.cpu_nums)
+        ds = ds.repeat()
         # No shuffle.
         if batch_size is not None:
             ds = ds.batch(batch_size, drop_remainder=True)
@@ -337,6 +338,14 @@ def Read_KNN_Record(dataset_dir, img_shape):
 
 def load_mnist_KNN_from_record(record_dir, batch_size):
     ds = Read_KNN_Record(record_dir, [1, 28, 28])
+    ds = ds.repeat()
+    ds = ds.shuffle(10000, seed=547)
+    ds = ds.batch(batch_size, drop_remainder=True)
+    return ds.prefetch(tf.contrib.data.AUTOTUNE)
+
+
+def load_CelebA_KNN_from_record(record_dir, batch_size):
+    ds = Read_KNN_Record(record_dir, [64, 64, 3])
     ds = ds.repeat()
     ds = ds.shuffle(10000, seed=547)
     ds = ds.batch(batch_size, drop_remainder=True)
